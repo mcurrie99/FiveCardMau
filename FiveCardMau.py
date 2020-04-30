@@ -69,7 +69,7 @@ def game(screen):
         screen.blit(card_placer, (1610,230))
 
         # Tap Button
-        pygame.draw.
+        # pygame.draw.
 
         card_held(screen)
 
