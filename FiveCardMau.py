@@ -33,8 +33,8 @@ def main():
     # Initializes py game window
     pygame.init()
 
-    # Sets up screen size
-    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+    # Sets up screen size, you could use pygame.RESIZABLE or pygame.FULLSCREEN
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
     game(screen)
 
 
@@ -45,7 +45,7 @@ def game(screen):
 
     #Card Placement
     text = 'Place Card(s) Here'
-    myFont = pygame.font.SysFont('arial', 36)
+    myFont = pygame.font.SysFont('arial', 29)
     card_placer = myFont.render(text, 1, (255,255,255))
 
     #Background
@@ -57,6 +57,10 @@ def game(screen):
             # print(event)
             if event.type == pygame.QUIT:
                 sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    sys.exit()
     
         # Resets screen
         screen.fill((0,0,0))
