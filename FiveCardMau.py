@@ -45,8 +45,10 @@ def game(screen):
 
     #Card Placement
     text = 'Place Card(s) Here'
+    tap = "TAP!"
     myFont = pygame.font.SysFont('arial', 29)
     card_placer = myFont.render(text, 1, (255,255,255))
+    TAP = myFont.render(tap, 1, (255,255,255))
 
     #Background
     background = pygame.image.load('background.png')
@@ -66,14 +68,17 @@ def game(screen):
         screen.fill((0,0,0))
         screen.blit(background, (0,0))
         
+        #Hovering whites
         place_card(screen, card_hold)
+        tapper(screen, card_hold)
 
         # Where to place cards
         pygame.draw.rect(screen, (0,0,0), (1604,50, Card_x, Card_y))
         screen.blit(card_placer, (1610,230))
 
         # Tap Button
-        # pygame.draw.
+        pygame.draw.circle(screen, (0,0,0), (500, 225), 100)
+        screen.blit(TAP, (470,212))
 
         card_held(screen)
 
@@ -84,7 +89,7 @@ def place_card(screen, card_hold):
     # White outline on black box
     pressed = pygame.mouse.get_pressed()
     pos = pygame.mouse.get_pos()
-    if (pressed[0] == 1) and (pos[0] >= 1604 and pos[1] >= 50) and card_hold==True:
+    if (pressed[0] == 1) and (pos[0] >= 1604 and pos[0] <= 1870 and pos[1] >= 50 and pos[1] <= 450) and card_hold==True:
         pygame.draw.rect(screen, (255,255,255), (1584, 30, Card_x + 40, Card_y + 40))
 
     # print(pos[0])
@@ -107,7 +112,7 @@ def card_held(screen):
         dif_y = pos[1] - temp[1]
         temp[0] = pos[0]-dif_x
         temp[1] = pos[1]-dif_y
-        pygame.draw.rect(screen, (0,0,0), (pos[0]+dif_x, pos[1]+dif_y, Card_x, Card_y))
+        pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
         card_hold = True
         print(1)
     elif button == True and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y) and card_hold == True:
@@ -132,6 +137,14 @@ def card_held(screen):
         temp[1] = store[1]
         card_hold = False
         print(4)
+
+def tapper(screen, card_hold):
+    pos = pygame.mouse.get_pos()
+
+    if card_hold == False and (pos[0] >= 400 and pos[0] <= 600 and pos[1] >= 125 and pos[1] <= 325):
+        pygame.draw.circle(screen, (255,255,255), (500, 225), 120)
+    else:
+        pass
 
     
 
