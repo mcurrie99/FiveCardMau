@@ -34,13 +34,14 @@ def main():
     # Initializes py game window
     pygame.init()
 
+    # Background Music
+    mixer.music.load('music.mp3')
+    mixer.music.play(-1)
+
     # Sets up screen size, you could use pygame.RESIZABLE or pygame.FULLSCREEN
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
     game(screen)
 
-    # Background Music
-    mixer.music.load('music.mp3')
-    mixer.music.play(-1)
 
 
 def game(screen):
