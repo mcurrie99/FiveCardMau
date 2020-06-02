@@ -1,3 +1,6 @@
+def check_card():
+    pass
+
 def Ace():
     print('Hello')
 
