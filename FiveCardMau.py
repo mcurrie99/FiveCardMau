@@ -80,6 +80,12 @@ def game(screen):
         pygame.draw.circle(screen, (0,0,0), (500, 225), 100)
         screen.blit(TAP, (470,212))
 
+        # Place Cards
+        pygame.draw.rect(screen, (0,0,0), (1604, 500, 186, 100))
+
+        # Reset Place Card
+        pygame.draw.rect(screen, (0,0,0), (1810, 500, 100, 100))
+
         card_held(screen)
 
         pygame.display.update()
