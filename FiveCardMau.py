@@ -30,6 +30,11 @@ def main():
     global WIDTH
     global HEIGTH
     global background
+    global data
+    data = {}
+    
+    with open ('Cards.txt') as json_file:
+        data = json.load(json_file)
 
     # Initializes py game window
     pygame.init()
@@ -48,6 +53,7 @@ def game(screen):
     global WIDTH
     global HEIGTH
     global background
+    global data
 
     #Card Placement
     text = 'Place Card(s) Here'
@@ -87,10 +93,10 @@ def game(screen):
         pygame.draw.circle(screen, (0,0,0), (500, 225), 100)
         screen.blit(TAP, (470,212))
 
-        # Place Cards
+        # Place Cards on Deck
         pygame.draw.rect(screen, (0,0,0), (1604, 500, 186, 100))
 
-        # Reset Place Card
+        # Reset Placed Cards
         pygame.draw.rect(screen, (0,0,0), (1810, 500, 100, 100))
 
         card_held(screen)
@@ -118,39 +124,46 @@ def card_held(screen):
     elif pressed == 0:
         button = False
 
-    
+   # Testing Card Texture
+    texture = data["Cards"][random.randint(0, 53)]
+    img = pygame.image.load(f'Playing Cards/{texture}.png')
+    img.convert()
+    rect = img.get_rect()
+    rect.center = 800, 600
+    # img = pygame.transform.rotozoom(img, 0, .5)
+    screen.blit(img, rect)
 
-    if button == True and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y) and card_hold == False:
-        dif_x = pos[0] - temp[0]
-        dif_y = pos[1] - temp[1]
-        temp[0] = pos[0]-dif_x
-        temp[1] = pos[1]-dif_y
-        pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
-        card_hold = True
-        print(1)
-    elif button == True and card_hold == True:
-        # and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y)
-        temp[0] = pos[0]-dif_x
-        temp[1] = pos[1]-dif_y
-        pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
-        card_hold = True
-        # print(temp)
-        # print(pos)
-        # print(dif_x)
-        # print(dif_y)
-        print(2)
-    # elif (button == False) and (card_hold == True):
-    #     pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
+    # if button == True and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y) and card_hold == False:
+    #     dif_x = pos[0] - temp[0]
+    #     dif_y = pos[1] - temp[1]
+    #     temp[0] = pos[0]-dif_x
+    #     temp[1] = pos[1]-dif_y
+    #     pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
+    #     card_hold = True
+    #     print(1)
+    # elif button == True and card_hold == True:
+    #     # and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y)
+    #     temp[0] = pos[0]-dif_x
+    #     temp[1] = pos[1]-dif_y
+    #     pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
+    #     card_hold = True
+    #     # print(temp)
+    #     # print(pos)
+    #     # print(dif_x)
+    #     # print(dif_y)
+    #     print(2)
+    # # elif (button == False) and (card_hold == True):
+    # #     pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
+    # #     temp[0] = store[0]
+    # #     temp[1] = store[1]
+    # #     card_hold = False
+    # #     print(3)
+    # else:
+    #     # pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
     #     temp[0] = store[0]
     #     temp[1] = store[1]
     #     card_hold = False
-    #     print(3)
-    else:
-        pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
-        temp[0] = store[0]
-        temp[1] = store[1]
-        card_hold = False
-        print(4)
+    #     print(4)
 
 def tapper(screen, card_hold):
     pos = pygame.mouse.get_pos()
