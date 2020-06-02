@@ -38,6 +38,10 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
     game(screen)
 
+    # Background Music
+    mixer.music.load('music.mp3')
+    mixer.music.play(-1)
+
 
 def game(screen):
     global WIDTH
@@ -53,10 +57,6 @@ def game(screen):
 
     #Background
     background = pygame.image.load('background.png')
-
-    # Background Music
-    mixer.music.load()
-    mixer.music.play(-1)
 
 
     # Game
@@ -127,7 +127,8 @@ def card_held(screen):
         pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
         card_hold = True
         print(1)
-    elif button == True and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y) and card_hold == True:
+    elif button == True and card_hold == True:
+        # and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y)
         temp[0] = pos[0]-dif_x
         temp[1] = pos[1]-dif_y
         pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
@@ -137,12 +138,12 @@ def card_held(screen):
         # print(dif_x)
         # print(dif_y)
         print(2)
-    elif (button == False) and (card_hold == True):
-        pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
-        temp[0] = store[0]
-        temp[1] = store[1]
-        card_hold = False
-        print(3)
+    # elif (button == False) and (card_hold == True):
+    #     pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
+    #     temp[0] = store[0]
+    #     temp[1] = store[1]
+    #     card_hold = False
+    #     print(3)
     else:
         pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
         temp[0] = store[0]
