@@ -4,6 +4,7 @@ import random
 import json
 import time
 import Rules
+from pygame import mixer
 
 # Initial variable for holding cards
 button = False
@@ -52,6 +53,11 @@ def game(screen):
 
     #Background
     background = pygame.image.load('background.png')
+
+    # Background Music
+    mixer.music.load()
+    mixer.music.play(-1)
+
 
     # Game
     while not game_over:
