@@ -3,7 +3,6 @@ import sys
 import random
 import json
 import time
-import Rules
 from pygame import mixer
 from Network import Network
 
@@ -22,7 +21,7 @@ class Button:
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
         font = pygame.font.SysFont('comicsans', 40)
         text = font.render(self.text, 1, (255, 255, 255))
-        win.blit(text, (self.x + round(self.width/2) - round(text.get_width()/2), self.y + round(self.height/2) - round(text.get_height()/2)))
+        screen.blit(text, (self.x + round(self.width/2) - round(text.get_width()/2), self.y + round(self.height/2) - round(text.get_height()/2)))
 
     def click(self, pos):
         x1 = pos[0]
@@ -32,7 +31,8 @@ class Button:
         else:
             return False
     
-    def moving(self, pos, button_hold)
+    def moving(self, pos, button_hold):
+        pass
 
 # Initial variable for holding cards
 
@@ -59,20 +59,64 @@ def main():
     global WIDTH
     global HEIGTH
     global background
+    n = Network()
+            
+
 
     # Initializes py game window
     pygame.init()
 
     # Sets up screen size, you could use pygame.RESIZABLE or pygame.FULLSCREEN
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
-    game(screen)
-
+    pygame.display.set_caption('Five Card Mau')
+    
     # Background Music
     mixer.music.load('music.mp3')
     mixer.music.play(-1)
 
+    # Initializes connection with server
+    count = 0
+    while True:
+        
+        for event in pygame.event.get():
+            # print(event)
+            if event.type == pygame.QUIT:
+                sys.exit()
 
-def game(screen):
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    sys.exit()
+        try:
+            player = int(n.getP)
+            break
+        except:
+            if count == 0:
+                connectingText = 'Connecting to Server'
+                count = 1
+            elif count == 1:
+                connectingText = 'Connecting to Server.'
+                count = 2
+            elif count == 2:
+                connectingText = 'Connecting to Server..'
+                count = 3
+            elif count == 3:
+                connectingText = 'Connecting to Server...'
+                count = 0
+            screen.fill((0,0,0))
+            connectingFont = pygame.font.SysFont('arial', 29)
+            connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
+            screen.blit(connectingRender, (WIDTH/2 - connectingRender.get_width()/2, HEIGHT/2 - connectingRender.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(333)
+            pass
+
+    # Starts game
+    game(screen, n, player)
+
+    
+
+
+def game(screen, n, player):
     global WIDTH
     global HEIGTH
     global background
@@ -81,8 +125,8 @@ def game(screen):
     text = 'Place Card(s) Here'
     tap = "TAP!"
     myFont = pygame.font.SysFont('arial', 29)
-    card_placer = myFont.render(text, 1, (255,255,255))
-    TAP = myFont.render(tap, 1, (255,255,255))
+    card_placer = myFont.render(text, 1, (255, 255, 255))
+    TAP = myFont.render(tap, 1, (255, 255, 255))
 
     #Background
     background = pygame.image.load('background.png')
