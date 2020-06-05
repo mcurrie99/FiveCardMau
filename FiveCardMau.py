@@ -5,8 +5,33 @@ import json
 import time
 import Rules
 from pygame import mixer
+from Network import Network
+
+class Button:
+    def __init__(self, text, x, y, color):
+        self.text = text
+        self.x = x
+        self.y = y
+        self.color = color
+        self.width = 150
+        self.height = 150
+
+    def draw(self, win):
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
+        font = pygame.font.SysFont('comicsans', 40)
+        text = font.render(self.text, 1, (255, 255, 255))
+        win.blit(text, (self.x + round(self.width/2) - round(text.get_width()/2), self.y + round(self.height/2) - round(text.get_height()/2)))
+
+    def click(self, pos):
+        x1 = pos[0]
+        y1 = pos[1]
+        if self.x <= x1 <= self.x + self.width and self.y <= y1 <= self.y + self.height:
+            return True
+        else:
+            return False
 
 # Initial variable for holding cards
+
 button = False
 
 #Screen Dimensions
@@ -30,30 +55,23 @@ def main():
     global WIDTH
     global HEIGTH
     global background
-    global data
-    data = {}
-    
-    with open ('Cards.txt') as json_file:
-        data = json.load(json_file)
 
     # Initializes py game window
     pygame.init()
-
-    # Background Music
-    mixer.music.load('music.mp3')
-    mixer.music.play(-1)
 
     # Sets up screen size, you could use pygame.RESIZABLE or pygame.FULLSCREEN
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
     game(screen)
 
+    # Background Music
+    mixer.music.load('music.mp3')
+    mixer.music.play(-1)
 
 
 def game(screen):
     global WIDTH
     global HEIGTH
     global background
-    global data
 
     #Card Placement
     text = 'Place Card(s) Here'
@@ -93,10 +111,10 @@ def game(screen):
         pygame.draw.circle(screen, (0,0,0), (500, 225), 100)
         screen.blit(TAP, (470,212))
 
-        # Place Cards on Deck
+        # Place Cards
         pygame.draw.rect(screen, (0,0,0), (1604, 500, 186, 100))
 
-        # Reset Placed Cards
+        # Reset Place Card
         pygame.draw.rect(screen, (0,0,0), (1810, 500, 100, 100))
 
         card_held(screen)
@@ -124,46 +142,39 @@ def card_held(screen):
     elif pressed == 0:
         button = False
 
-   # Testing Card Texture
-    texture = data["Cards"][random.randint(0, 53)]
-    img = pygame.image.load(f'Playing Cards/{texture}.png')
-    img.convert()
-    rect = img.get_rect()
-    rect.center = 800, 600
-    # img = pygame.transform.rotozoom(img, 0, .5)
-    screen.blit(img, rect)
+    
 
-    # if button == True and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y) and card_hold == False:
-    #     dif_x = pos[0] - temp[0]
-    #     dif_y = pos[1] - temp[1]
-    #     temp[0] = pos[0]-dif_x
-    #     temp[1] = pos[1]-dif_y
-    #     pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
-    #     card_hold = True
-    #     print(1)
-    # elif button == True and card_hold == True:
-    #     # and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y)
-    #     temp[0] = pos[0]-dif_x
-    #     temp[1] = pos[1]-dif_y
-    #     pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
-    #     card_hold = True
-    #     # print(temp)
-    #     # print(pos)
-    #     # print(dif_x)
-    #     # print(dif_y)
-    #     print(2)
-    # # elif (button == False) and (card_hold == True):
-    # #     pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
-    # #     temp[0] = store[0]
-    # #     temp[1] = store[1]
-    # #     card_hold = False
-    # #     print(3)
-    # else:
-    #     # pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
+    if button == True and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y) and card_hold == False:
+        dif_x = pos[0] - temp[0]
+        dif_y = pos[1] - temp[1]
+        temp[0] = pos[0]-dif_x
+        temp[1] = pos[1]-dif_y
+        pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
+        card_hold = True
+        print(1)
+    elif button == True and card_hold == True:
+        # and (pos[0] >= temp[0] and pos[0] <= temp[0] + Card_x and pos[1] >= temp[1] and pos[1] <= temp[1] + Card_y)
+        temp[0] = pos[0]-dif_x
+        temp[1] = pos[1]-dif_y
+        pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
+        card_hold = True
+        # print(temp)
+        # print(pos)
+        # print(dif_x)
+        # print(dif_y)
+        print(2)
+    # elif (button == False) and (card_hold == True):
+    #     pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
     #     temp[0] = store[0]
     #     temp[1] = store[1]
     #     card_hold = False
-    #     print(4)
+    #     print(3)
+    else:
+        pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
+        temp[0] = store[0]
+        temp[1] = store[1]
+        card_hold = False
+        print(4)
 
 def tapper(screen, card_hold):
     pos = pygame.mouse.get_pos()
