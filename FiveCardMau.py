@@ -8,13 +8,15 @@ from pygame import mixer
 from Network import Network
 
 class Button:
-    def __init__(self, text, x, y, color):
+    def __init__(self, text, x, y, color, card):
         self.text = text
         self.x = x
         self.y = y
         self.color = color
         self.width = 150
         self.height = 150
+        self.button_hold = False
+        self.card = card
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
@@ -29,6 +31,8 @@ class Button:
             return True
         else:
             return False
+    
+    def moving(self, pos, button_hold)
 
 # Initial variable for holding cards
 
