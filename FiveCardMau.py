@@ -88,6 +88,7 @@ def main():
                     sys.exit()
         try:
             player = int(n.connect(name))
+            print(player)
             break
         except:
             if count == 0:
@@ -211,7 +212,7 @@ def card_held(screen):
         temp[0] = store[0]
         temp[1] = store[1]
         card_hold = False
-        print(4)
+        # print(4)
 
 def tapper(screen, card_hold):
     pos = pygame.mouse.get_pos()

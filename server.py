@@ -24,27 +24,27 @@ players = []
 def threaded_client(conn, p):
     global idCount
     conn.send(str.encode(str(p)))
-    players.append(conn.recv(4096).decode())
-    print(players)
 
     reply = ''
     while True:
         try:
             data = conn.recv(4096).decode()
+            players.append(data)
+            print(players)
 
-            if gameId in games:
-                game = games[gameId]
-                if not data:
-                    break
-                else:
-                    if data == 'reset':
-                        game.resetWent()
-                    elif data != 'get':
-                        game.play(p, data)
-                    reply = game
-                    conn.sendall(pickle.dumps(reply))
-            else:
-                break
+        #     if gameId in games:
+        #         game = games[gameId]
+        #         if not data:
+        #             break
+        #         else:
+        #             if data == 'reset':
+        #                 game.resetWent()
+        #             elif data != 'get':
+        #                 game.play(p, data)
+        #             reply = game
+        #             conn.sendall(pickle.dumps(reply))
+        #     else:
+        #         break
         except:
             break
 
