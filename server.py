@@ -19,10 +19,13 @@ print('Waiting for a connection, Server Started')
 connected = set()
 games = {}
 idCount = 0
+players = []
 
-def threaded_client(conn, p, gameId):
+def threaded_client(conn, p):
     global idCount
     conn.send(str.encode(str(p)))
+    players.append(conn.recv(4096).decode())
+    print(players)
 
     reply = ''
     while True:
@@ -64,13 +67,13 @@ while True:
 
     idCount += 1
     p = 0
-    gameId = (idCount - 1) // 2
+    # gameId = (idCount - 1) // 2
 
-    if idCount % 2 == 1:
-        games[gameId] = Game(gameId)
-        print('Creating a New Game')
-    else:
-        games[gameId].ready = True
-        p = 1
+    # if idCount % 2 == 1:
+    #     # games[gameId] = Game(gameId)
+    #     print('Creating a New Game')
+    # else:
+    #     games[gameId].ready = True
+    #     p = 1
 
-    start_new_thread(threaded_client, (conn, p, gameId))
+    start_new_thread(threaded_client, (conn, p))

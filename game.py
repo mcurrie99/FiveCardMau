@@ -5,8 +5,7 @@ class Game:
         self.wins = []
         self.topCard = 'ace_of_spades'
 
-    def deal(self, 362
-    .0+514):
+    def deal(self):
         """
         :param p: [0,1]
         :return: Move

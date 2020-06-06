@@ -7,14 +7,11 @@ class Network:
         self.server = '192.168.1.184'
         self.port = 5555
         self.addr = (self.server, self.port)
-        self.p = self.connect()
-    
-    def getP(self):
-        return self.p
 
-    def connect(self):
+    def connect(self, name):
         try:
             self.client.connect(self.addr)
+            # self.client.send(str.encode(name))
             return self.client.recv(2048).decode()
         except:
             pass

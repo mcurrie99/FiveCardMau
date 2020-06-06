@@ -61,7 +61,7 @@ def main():
     global background
     n = Network()
             
-
+    name = input()
 
     # Initializes py game window
     pygame.init()
@@ -87,25 +87,25 @@ def main():
                 if event.key == pygame.K_q:
                     sys.exit()
         try:
-            player = int(n.getP)
+            player = int(n.connect(name))
             break
         except:
             if count == 0:
-                connectingText = 'Connecting to Server'
+                connectingText = f'Connecting {name} to Server'
                 count = 1
             elif count == 1:
-                connectingText = 'Connecting to Server.'
+                connectingText = f'Connecting {name} to Server.'
                 count = 2
             elif count == 2:
-                connectingText = 'Connecting to Server..'
+                connectingText = f'Connecting {name} to Server..'
                 count = 3
             elif count == 3:
-                connectingText = 'Connecting to Server...'
+                connectingText = f'Connecting {name} to Server...'
                 count = 0
             screen.fill((0,0,0))
             connectingFont = pygame.font.SysFont('arial', 29)
             connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
-            screen.blit(connectingRender, (WIDTH/2 - connectingRender.get_width()/2, HEIGHT/2 - connectingRender.get_height()/2))
+            screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
             pygame.display.update()
             pygame.time.delay(333)
             pass
@@ -206,17 +206,6 @@ def card_held(screen):
         temp[1] = pos[1]-dif_y
         pygame.draw.rect(screen, (0,0,0), (temp[0], temp[1], Card_x, Card_y))
         card_hold = True
-        # print(temp)
-        # print(pos)
-        # print(dif_x)
-        # print(dif_y)
-        print(2)
-    # elif (button == False) and (card_hold == True):
-    #     pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
-    #     temp[0] = store[0]
-    #     temp[1] = store[1]
-    #     card_hold = False
-    #     print(3)
     else:
         pygame.draw.rect(screen, (0,0,0), (store[0], store [1], Card_x, Card_y))
         temp[0] = store[0]
