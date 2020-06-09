@@ -29,10 +29,10 @@ class Network:
         except socket.error as e:
             print(e)
 
-    def send_hand(hand):
+    def send_hand(self, hand):
         # Further investigation might conclude that this is not needed if processing is done on server side.
         for i in range(0, len(hand)):
             self.client.send(str.encode(hand[i]))
 
-    def alter_hand():
-        
+    def alter_hand(self):
+        passm
