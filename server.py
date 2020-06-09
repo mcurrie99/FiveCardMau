@@ -24,13 +24,14 @@ players = []
 def threaded_client(conn, p):
     global idCount
     conn.send(str.encode(str(p)))
+    name = conn.recv(4096).decode()
+    # players.append(name)
+    print(name)
 
     reply = ''
     while True:
         try:
             data = conn.recv(4096).decode()
-            players.append(data)
-            print(players)
 
         #     if gameId in games:
         #         game = games[gameId]
@@ -77,3 +78,4 @@ while True:
     #     p = 1
 
     start_new_thread(threaded_client, (conn, p))
+    p += 1

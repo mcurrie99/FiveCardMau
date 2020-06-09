@@ -1,9 +1,17 @@
+import json
+
 class Game:
     def __init__(self, id):
-        self.players = []
+        with open('Cards.json') as json_file:
+            self.cards = json.load(json_file)
+        self.players = {}
+        self.hand = {}
         self.moves = []
         self.wins = []
         self.topCard = 'ace_of_spades'
+        self.started = False
+        self.player_count = 0
+        self.votes = 0
 
     def deal(self):
         """
@@ -19,11 +27,38 @@ class Game:
         else:
             self.p2Went = True
         
-    def connected(self):
-        return self.ready
+    def player_went(self):
+        return self.started
 
     def bothWent(self):
         return self.p1Went and self.p2Went
+
+    def add_player(self, Name, playerid):
+        self.players.update({Name:[playerid, False]})
+        host = False
+        for i, j in enumerate(self.players):
+            if self.players[j][1] == True:
+                host = True
+        if host == False:
+            self.players[Name][1] = True
+
+    def remove_player(self, Name):
+        try:
+            if self.players[Name][1] == True:
+                self.find_new_host()
+            del self.players['Matt']
+        except:
+            pass
+
+    def find_new_host(self):
+        try:
+            for i, j in enumerate(self.players):
+                if self.players[j][1] == False:
+                    self.players[j][1] = True
+                    break
+        except:
+            # return game back preparing state
+            pass
 
     def winner(self):
         p1 = self.moves[0].upper()[0]
@@ -45,6 +80,18 @@ class Game:
 
         return winner
     
-    def resetWent(self):
-        self.p1Went = False
-        self.p2Went = False
+    def end_game(self):
+        self.started = False
+        for i, j in enumerate(self.hand):
+            for k in range(0, len(self.hand[j])):
+                del self.hand[j][0]
+        return self.started
+
+    def start_game(self):
+        self.started = True
+        with open('Cards.json') as json_file:
+            self.cards = json.load(json_file)
+        return self.started
+
+    def vote(self):
+        self.votes += 1

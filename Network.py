@@ -11,8 +11,14 @@ class Network:
     def connect(self, name):
         try:
             self.client.connect(self.addr)
-            # self.client.send(str.encode(name))
+            self.client.send(str.encode(name))
             return self.client.recv(2048).decode()
+        except:
+            pass
+
+    def get_game(self, id):
+        try:
+            return pickle.dumps(self.client.recv(2048))
         except:
             pass
 
@@ -22,3 +28,11 @@ class Network:
             return pickle.loads(self.client.recv(2048))
         except socket.error as e:
             print(e)
+
+    def send_hand(hand):
+        # Further investigation might conclude that this is not needed if processing is done on server side.
+        for i in range(0, len(hand)):
+            self.client.send(str.encode(hand[i]))
+
+    def alter_hand():
+        

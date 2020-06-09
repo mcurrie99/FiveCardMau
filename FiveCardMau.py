@@ -6,34 +6,6 @@ import time
 from pygame import mixer
 from Network import Network
 
-class Button:
-    def __init__(self, text, x, y, color, card):
-        self.text = text
-        self.x = x
-        self.y = y
-        self.color = color
-        self.width = 150
-        self.height = 150
-        self.button_hold = False
-        self.card = card
-
-    def draw(self, win):
-        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
-        font = pygame.font.SysFont('comicsans', 40)
-        text = font.render(self.text, 1, (255, 255, 255))
-        screen.blit(text, (self.x + round(self.width/2) - round(text.get_width()/2), self.y + round(self.height/2) - round(text.get_height()/2)))
-
-    def click(self, pos):
-        x1 = pos[0]
-        y1 = pos[1]
-        if self.x <= x1 <= self.x + self.width and self.y <= y1 <= self.y + self.height:
-            return True
-        else:
-            return False
-    
-    def moving(self, pos, button_hold):
-        pass
-
 # Initial variable for holding cards
 
 button = False
@@ -108,7 +80,6 @@ def main():
             connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
             screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
             pygame.display.update()
-            pygame.time.delay(333)
             pass
 
     # Starts game
@@ -121,6 +92,8 @@ def game(screen, n, player):
     global WIDTH
     global HEIGTH
     global background
+    voted = False
+    hand = {}
 
     #Card Placement
     text = 'Place Card(s) Here'
@@ -222,12 +195,46 @@ def tapper(screen, card_hold):
     else:
         pass
 
-    
-
 # def card_move(screen, dif_x, dif_y):
 #     pygame.draw.rect(screen, (0,0,0), (1604,50, Card_x, Card_y)
     
     
+
+class Button:
+    def __init__(self, text, x, y, color, card):
+        self.text = text
+        self.x = x
+        self.y = y
+        self.color = color
+        self.width = 150
+        self.height = 150
+        self.button_hold = False
+        self.card = card
+
+    def draw(self, win):
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
+        font = pygame.font.SysFont('comicsans', 40)
+        text = font.render(self.text, 1, (255, 255, 255))
+        screen.blit(text, (self.x + round(self.width/2) - round(text.get_width()/2), self.y + round(self.height/2) - round(text.get_height()/2)))
+
+    def click(self, pos):
+        x1 = pos[0]
+        y1 = pos[1]
+        if self.x <= x1 <= self.x + self.width and self.y <= y1 <= self.y + self.height:
+            return True
+        else:
+            return False
+    
+    def moving(self, pos, button_hold):
+        pass
+
+    def game_ended():
+        # set values that need to be reset when the server announces it
+        pass
+
+    def vote():
+        pass
+        # Use this function to only let the player vote once.
 
 
 
