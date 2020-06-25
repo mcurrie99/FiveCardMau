@@ -35,4 +35,4 @@ class Network:
             self.client.send(str.encode(hand[i]))
 
     def alter_hand(self):
-        passm
+        pass

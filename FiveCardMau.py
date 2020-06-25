@@ -46,45 +46,48 @@ def main():
     mixer.music.load('music.mp3')
     mixer.music.play(-1)
 
+    main_menu(screen)
+
+def connect_server(screen, name, network):
     # Initializes connection with server
     count = 0
-    # while True:
+    while True:
         
-    #     for event in pygame.event.get():
-    #         # print(event)
-    #         if event.type == pygame.QUIT:
-    #             sys.exit()
+        for event in pygame.event.get():
+            # print(event)
+            if event.type == pygame.QUIT:
+                sys.exit()
 
-    #         if event.type == pygame.KEYDOWN:
-    #             if event.key == pygame.K_q:
-    #                 sys.exit()
-        # try:
-        #     player = int(n.connect(name))
-        #     print(player)
-        #     break
-        # except:
-        #     if count == 0:
-        #         connectingText = f'Connecting {name} to Server'
-        #         count = 1
-        #     elif count == 1:
-        #         connectingText = f'Connecting {name} to Server.'
-        #         count = 2
-        #     elif count == 2:
-        #         connectingText = f'Connecting {name} to Server..'
-        #         count = 3
-        #     elif count == 3:
-        #         connectingText = f'Connecting {name} to Server...'
-        #         count = 0
-        #     screen.fill((0,0,0))
-        #     connectingFont = pygame.font.SysFont('arial', 29)
-        #     connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
-        #     screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
-        #     pygame.display.update()
-        #     pass
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    sys.exit()
+        try:
+            player = int(n.connect(name))
+            print(player)
+            break
+        except:
+            if count == 0:
+                connectingText = f'Connecting {name} to Server'
+                count = 1
+            elif count == 1:
+                connectingText = f'Connecting {name} to Server.'
+                count = 2
+            elif count == 2:
+                connectingText = f'Connecting {name} to Server..'
+                count = 3
+            elif count == 3:
+                connectingText = f'Connecting {name} to Server...'
+                count = 0
+            screen.fill((0,0,0))
+            connectingFont = pygame.font.SysFont('arial', 29)
+            connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
+            screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
+            pygame.display.update()
+            pass
 
     # Starts game
     player = 1
-    game(screen, n, player)
+    game(screen, network, player)
 
 
     
@@ -97,7 +100,7 @@ def game(screen, n, player):
     voted = False
     hand = {}
 
-    main_menu(screen)
+    lobby(screen)
 
     #Card Placement
     text = 'Place Card(s) Here'
@@ -203,7 +206,7 @@ def tapper(screen, card_hold):
 #     pygame.draw.rect(screen, (0,0,0), (1604,50, Card_x, Card_y)
     
     
-def main_menu(screen):
+def lobby(screen):
     game = False
 
     lobby = pygame.image.load('lobby.png')
@@ -237,10 +240,33 @@ def draw_text(screen, text, font, fontsize, x, y, color):
     '''
 
     texter = str(text)
-    fonter = pygame.font.SysFont(font, 29)
+    fonter = pygame.font.SysFont(font, fontsize)
     Render = fonter.render(texter, 1, color)
     screen.blit(Render, (int(x/2 - Render.get_width()/2), int(y/2 - Render.get_height()/2)))
             
+def main_menu(screen):
+    join = False
+
+    lobby = pygame.image.load('lobby.png')
+
+    while join == False:
+        for event in pygame.event.get():
+            # print(event)
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    sys.exit()
+
+        screen.fill((0,0,0))
+        screen.blit(lobby, (0,0))
+
+        draw_text(screen, 'Main Menu', 'arial', 35, WIDTH,400, (255,255,255))
+        draw_text(screen, 'Join', 'arial', 80, WIDTH, HEIGHT, (255,255,255))
+
+        pygame.display.update()
+
 
 
 
@@ -273,13 +299,13 @@ class Button:
     def moving(self, pos, button_hold):
         pass
 
-    def game_ended():
-        # set values that need to be reset when the server announces it
-        pass
+def game_ended():
+    # set values that need to be reset when the server announces it
+    pass
 
-    def vote():
-        pass
-        # Use this function to only let the player vote once.
+def vote():
+    pass
+    # Use this function to only let the player vote once.
 
 
 
