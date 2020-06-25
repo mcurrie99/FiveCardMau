@@ -48,42 +48,44 @@ def main():
 
     # Initializes connection with server
     count = 0
-    while True:
+    # while True:
         
-        for event in pygame.event.get():
-            # print(event)
-            if event.type == pygame.QUIT:
-                sys.exit()
+    #     for event in pygame.event.get():
+    #         # print(event)
+    #         if event.type == pygame.QUIT:
+    #             sys.exit()
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
-                    sys.exit()
-        try:
-            player = int(n.connect(name))
-            print(player)
-            break
-        except:
-            if count == 0:
-                connectingText = f'Connecting {name} to Server'
-                count = 1
-            elif count == 1:
-                connectingText = f'Connecting {name} to Server.'
-                count = 2
-            elif count == 2:
-                connectingText = f'Connecting {name} to Server..'
-                count = 3
-            elif count == 3:
-                connectingText = f'Connecting {name} to Server...'
-                count = 0
-            screen.fill((0,0,0))
-            connectingFont = pygame.font.SysFont('arial', 29)
-            connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
-            screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
-            pygame.display.update()
-            pass
+    #         if event.type == pygame.KEYDOWN:
+    #             if event.key == pygame.K_q:
+    #                 sys.exit()
+        # try:
+        #     player = int(n.connect(name))
+        #     print(player)
+        #     break
+        # except:
+        #     if count == 0:
+        #         connectingText = f'Connecting {name} to Server'
+        #         count = 1
+        #     elif count == 1:
+        #         connectingText = f'Connecting {name} to Server.'
+        #         count = 2
+        #     elif count == 2:
+        #         connectingText = f'Connecting {name} to Server..'
+        #         count = 3
+        #     elif count == 3:
+        #         connectingText = f'Connecting {name} to Server...'
+        #         count = 0
+        #     screen.fill((0,0,0))
+        #     connectingFont = pygame.font.SysFont('arial', 29)
+        #     connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
+        #     screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
+        #     pygame.display.update()
+        #     pass
 
     # Starts game
+    player = 1
     game(screen, n, player)
+
 
     
 
@@ -94,6 +96,8 @@ def game(screen, n, player):
     global background
     voted = False
     hand = {}
+
+    main_menu(screen)
 
     #Card Placement
     text = 'Place Card(s) Here'
@@ -199,6 +203,47 @@ def tapper(screen, card_hold):
 #     pygame.draw.rect(screen, (0,0,0), (1604,50, Card_x, Card_y)
     
     
+def main_menu(screen):
+    game = False
+
+    lobby = pygame.image.load('lobby.png')
+
+    while game == False:
+        for event in pygame.event.get():
+            # print(event)
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    sys.exit()
+
+        screen.fill((0,0,0))
+        screen.blit(lobby, (0,0))
+
+        draw_text(screen, 'Lobby', 'arial', 35, 400,400, (255,255,255))
+
+        pygame.display.update()
+
+def draw_text(screen, text, font, fontsize, x, y, color):
+    '''
+    screen = pygame render screen
+    text = what you would like to be said
+    font = what font you would like
+    fontsize = fontsize you would like
+    x = width location location on the screen
+    y = height location on the screen
+    color = color of the text (x,y,z)
+    '''
+
+    texter = str(text)
+    fonter = pygame.font.SysFont(font, 29)
+    Render = fonter.render(texter, 1, color)
+    screen.blit(Render, (int(x/2 - Render.get_width()/2), int(y/2 - Render.get_height()/2)))
+            
+
+
+
 
 class Button:
     def __init__(self, text, x, y, color, card):
