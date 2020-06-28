@@ -46,7 +46,7 @@ def main():
     mixer.music.load('music.mp3')
     mixer.music.play(-1)
 
-    main_menu(screen)
+    main_menu(screen, name)
 
 def connect_server(screen, name, network):
     # Initializes connection with server
@@ -195,6 +195,7 @@ def card_held(screen):
         # print(4)
 
 def tapper(screen, card_hold):
+    # You might not need this
     pos = pygame.mouse.get_pos()
 
     if card_hold == False and (pos[0] >= 400 and pos[0] <= 600 and pos[1] >= 125 and pos[1] <= 325):
@@ -228,23 +229,29 @@ def lobby(screen):
 
         pygame.display.update()
 
-def draw_text(screen, text, font, fontsize, x, y, color):
-    '''
-    screen = pygame render screen
-    text = what you would like to be said
-    font = what font you would like
-    fontsize = fontsize you would like
-    x = width location location on the screen
-    y = height location on the screen
-    color = color of the text (x,y,z)
-    '''
-
-    texter = str(text)
-    fonter = pygame.font.SysFont(font, fontsize)
-    Render = fonter.render(texter, 1, color)
-    screen.blit(Render, (int(x/2 - Render.get_width()/2), int(y/2 - Render.get_height()/2)))
+# def draw_text(screen, text, font, fontsize, x, y, color, corner):
+#     '''
+#     screen = pygame render screen
+#     text = what you would like to be said
+#     font = what font you would like
+#     fontsize = fontsize you would like
+#     x = width location location on the screen
+#     y = height location on the screen
+#     color = color of the text (x,y,z)
+#     corner = True if you want using the center of the text or False if you want to use top left
+#     '''
+#     texter = str(text)
+#     fonter = pygame.font.SysFont(font, fontsize)
+#     Render = fonter.render(texter, 1, color)
+#     if corner == True:
+#         pygame.draw.rect(screen, (0,0,0), (int(x - Render.get_width()/2), int(y - Render.get_height()/2), int(Render.get_width()) + 10, int(Render.get_height() + 10)))
+#         screen.blit(Render, (int(x - Render.get_width()/2), int(y - Render.get_height()/2)))
+#     elif corner == False:
+#         pygame.draw.rect(screen, (0,0,0), (x, y, int(Render.get_width()) + 10, int(Render.get_height() + 10)))
+#         screen.blit(Render, (x + 10, y + 10))
+    
             
-def main_menu(screen):
+def main_menu(screen, name):
     join = False
 
     lobby = pygame.image.load('lobby.png')
@@ -262,8 +269,9 @@ def main_menu(screen):
         screen.fill((0,0,0))
         screen.blit(lobby, (0,0))
 
-        draw_text(screen, 'Main Menu', 'arial', 35, WIDTH,400, (255,255,255))
-        draw_text(screen, 'Join', 'arial', 80, WIDTH, HEIGHT, (255,255,255))
+        draw_text(screen, 'Main Menu', 'arial', 35, WIDTH/2,400, (255,255,255), True)
+        draw_text(screen, f'Welcome {name}', 'arial', 35, 0,0, (255,255,255), False)
+        draw_text(screen, 'Join', 'arial', 80, WIDTH/2, HEIGHT/2, (255,255,255), True)
 
         pygame.display.update()
 
@@ -272,7 +280,10 @@ def main_menu(screen):
 
 
 class Button:
-    def __init__(self, text, x, y, color, card):
+    def __init__(self, screen, text, x, y, color, font, card, corner):
+        '''
+
+        '''
         self.text = text
         self.x = x
         self.y = y
@@ -281,10 +292,14 @@ class Button:
         self.height = 150
         self.button_hold = False
         self.card = card
+        self.screen = screen
+        self.font = font
+        draw_text(self.screen, self.text, self.font, self.fontsize, self.x, self.y, self.corner)
 
     def draw(self, win):
+        # Might not need this either, see draw_tect()
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
-        font = pygame.font.SysFont('comicsans', 40)
+        font = pygame.font.SysFont('arial', 40)
         text = font.render(self.text, 1, (255, 255, 255))
         screen.blit(text, (self.x + round(self.width/2) - round(text.get_width()/2), self.y + round(self.height/2) - round(text.get_height()/2)))
 
@@ -298,6 +313,31 @@ class Button:
     
     def moving(self, pos, button_hold):
         pass
+
+    def draw_text(screen, text, font, fontsize, x, y, color, corner):
+        '''
+        screen = pygame render screen
+        text = what you would like to be said
+        font = what font you would like
+        fontsize = fontsize you would like
+        x = width location location on the screen
+        y = height location on the screen
+        color = color of the text (x,y,z)
+        corner = True if you want using the center of the text or False if you want to use top left
+        '''
+        texter = str(text)
+        fonter = pygame.font.SysFont(font, fontsize)
+        Render = fonter.render(texter, 1, color)
+        if corner == True:
+            pygame.draw.rect(screen, (0,0,0), (int(x - Render.get_width()/2), int(y - Render.get_height()/2), int(Render.get_width()) + 10, int(Render.get_height() + 10)))
+            screen.blit(Render, (int(x - Render.get_width()/2), int(y - Render.get_height()/2)))
+        elif corner == False:
+            pygame.draw.rect(screen, (0,0,0), (x, y, int(Render.get_width()) + 10, int(Render.get_height() + 10)))
+            screen.blit(Render, (x + 10, y + 10))
+
+    def hover(screen):
+        self.x
+
 
 def game_ended():
     # set values that need to be reset when the server announces it
