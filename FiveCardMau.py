@@ -269,9 +269,14 @@ def main_menu(screen, name):
         screen.fill((0,0,0))
         screen.blit(lobby, (0,0))
 
-        draw_text(screen, 'Main Menu', 'arial', 35, WIDTH/2,400, (255,255,255), True)
-        draw_text(screen, f'Welcome {name}', 'arial', 35, 0,0, (255,255,255), False)
-        draw_text(screen, 'Join', 'arial', 80, WIDTH/2, HEIGHT/2, (255,255,255), True)
+
+        MAIN = Button(screen, 'Main Menu', 'arial', 35, WIDTH/2, 400, (255,255,255), False, True)
+        WELCOME = Button(screen, f'Welcome {name}', 'arial', 35, 0, 0, (255,255,255), False, False)
+        JOIN = Button(screen, 'Join', 'arial', 80, WIDTH/2, HEIGHT/2, (255,255,255), False, True)
+        JOIN.hover()
+        # draw_text(screen, 'Main Menu', 'arial', 35, WIDTH/2,400, (255,255,255), True)
+        # draw_text(screen, f'Welcome {name}', 'arial', 35, 0,0, (255,255,255), False)
+        # draw_text(screen, 'Join', 'arial', 80, WIDTH/2, HEIGHT/2, (255,255,255), True)
 
         pygame.display.update()
 
@@ -280,10 +285,18 @@ def main_menu(screen, name):
 
 
 class Button:
-    def __init__(self, screen, text, x, y, color, font, card, corner):
+    '''
+        screen = pygame render screen
+        text = what you would like to be said
+        font = what font you would like
+        fontsize = fontsize you would like
+        x = width location location on the screen
+        y = height location on the screen
+        color = color of the text (x,y,z) RGB
+        card = Is it a card True or False
+        center = Use the center as reference
         '''
-
-        '''
+    def __init__(self, screen, text, font, fontsize, x, y, color, card, center):
         self.text = text
         self.x = x
         self.y = y
@@ -294,7 +307,9 @@ class Button:
         self.card = card
         self.screen = screen
         self.font = font
-        draw_text(self.screen, self.text, self.font, self.fontsize, self.x, self.y, self.corner)
+        self.fontsize = fontsize
+        self.center = center
+        self.draw_text()
 
     def draw(self, win):
         # Might not need this either, see draw_tect()
@@ -314,29 +329,41 @@ class Button:
     def moving(self, pos, button_hold):
         pass
 
-    def draw_text(screen, text, font, fontsize, x, y, color, corner):
-        '''
-        screen = pygame render screen
-        text = what you would like to be said
-        font = what font you would like
-        fontsize = fontsize you would like
-        x = width location location on the screen
-        y = height location on the screen
-        color = color of the text (x,y,z)
-        corner = True if you want using the center of the text or False if you want to use top left
-        '''
-        texter = str(text)
-        fonter = pygame.font.SysFont(font, fontsize)
-        Render = fonter.render(texter, 1, color)
-        if corner == True:
-            pygame.draw.rect(screen, (0,0,0), (int(x - Render.get_width()/2), int(y - Render.get_height()/2), int(Render.get_width()) + 10, int(Render.get_height() + 10)))
-            screen.blit(Render, (int(x - Render.get_width()/2), int(y - Render.get_height()/2)))
-        elif corner == False:
-            pygame.draw.rect(screen, (0,0,0), (x, y, int(Render.get_width()) + 10, int(Render.get_height() + 10)))
-            screen.blit(Render, (x + 10, y + 10))
+    def draw_text(self):
+        texter = str(self.text)
+        fonter = pygame.font.SysFont(self.font, self.fontsize)
+        Render = fonter.render(texter, 1, self.color)
+        self.render_width = Render.get_width()
+        self.render_height = Render.get_height()
+        if self.center == True:
+            pygame.draw.rect(self.screen, (0,0,0), (int(self.x - self.render_width/2 - 10), int(self.y - self.render_height/2 - 10), int(self.render_width) + 20, int(self.render_height + 20)))
+            self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
+        elif self.center == False:
+            pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width) + 20, int(self.render_height + 20)))
+            self.screen.blit(Render, (self.x + 10, self.y + 10))
 
-    def hover(screen):
-        self.x
+    def hover(self):
+        pos = pygame.mouse.get_pos()
+        mouse_x = pos[0]
+        mouse_y = pos[1]
+        print(mouse_x, mouse_y)
+        if self.center == True:
+            upper_x = self.x + self.render_width/2
+            lower_x = self.x - self.render_width/2
+            upper_y = self.y - self.render_height/2
+            lower_y = self.y + self.render_height/2
+            if ((mouse_x <= upper_x) and (mouse_x >= lower_x)) and ((mouse_y <= upper_y) and (mouse_y >= lower_y)):
+                print(1)
+                pyagme.draw.rect(self.screen, (255,255,255), (int(self.x - self.render_width/2 - 20), int(self.y - self.render_height/2 - 20), int(self.render_width) + 40, int(self.render_height + 40)))
+        elif self.center == False:
+            upper_x = self.x + self.render_width
+            lower_x = self.x
+            upper_y = self.y
+            lower_y = self.y + self.render_height
+            if ((mouse_x <= upper_x) and (mouse_x >= lower_x)) and ((mouse_y <= upper_y) and (mouse_y >= lower_y)):
+                print(2)
+                pyagme.draw.rect(self.screen, (255,255,255), (int(self.x - 20), int(self.y - 20), int(Render.get_width()) + 40, int(Render.get_height() + 40)))
+        
 
 
 def game_ended():
