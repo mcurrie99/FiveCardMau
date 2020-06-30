@@ -16,11 +16,12 @@ class Network:
         except:
             pass
 
-    def get_game(self, id):
+    def get_game(self):
         try:
-            return pickle.dumps(self.client.recv(2048))
-        except:
-            pass
+            self.client.send(str.encode('get_game'))
+            return pickle.loads(self.client.recv(2048))
+        except socket.error as e:
+            print(e)
 
     def send(self, data):
         try:

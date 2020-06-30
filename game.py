@@ -43,19 +43,24 @@ class Game:
             self.players[Name][1] = True
 
     def remove_player(self, Name):
+        new_host = False
         try:
             if self.players[Name][1] == True:
-                self.find_new_host()
-            del self.players['Matt']
+                new_host = True
+            del self.players[Name]
+            self.find_new_host()
         except:
-            pass
+            print(f'Could not delete player: {Name}')
 
     def find_new_host(self):
         try:
-            for i, j in enumerate(self.players):
-                if self.players[j][1] == False:
-                    self.players[j][1] = True
-                    break
+            if len(self.players > 1):
+                for i, j in enumerate(self.players):
+                    if self.players[j][1] == False:
+                        self.players[j][1] = True
+                        break
+            else:
+                pass
         except:
             # return game back preparing state
             pass
@@ -95,3 +100,11 @@ class Game:
 
     def vote(self):
         self.votes += 1
+
+    def get_game_started(self):
+        return self.started
+
+    def get_host_name(self):
+        for i, j in enumerate(self.players):
+            if self.players[j][1] == True:
+                return j

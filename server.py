@@ -8,6 +8,8 @@ port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+game = Game(0)
+
 try:
     s.bind((server, port))
 except socket.error as e:
@@ -25,13 +27,18 @@ def threaded_client(conn, p):
     global idCount
     conn.send(str.encode(str(p)))
     name = conn.recv(4096).decode()
-    # players.append(name)
+    game.add_player(name, p)
     print(name)
 
     reply = ''
     while True:
         try:
             data = conn.recv(4096).decode()
+            if data == 'get_game':
+                conn.sendall(pickle.dumps(game))
+            elif not data:
+                break
+            
 
         #     if gameId in games:
         #         game = games[gameId]
@@ -50,15 +57,16 @@ def threaded_client(conn, p):
             break
 
     print('Lost Connection')
-    try:
-        del games[gameId]
-        print('Closing Game: ', gameId)
-    except:
-        pass
+    # try:
+    #     del games[gameId]
+    #     print('Closing Game: ', gameId)
+    # except:
+    #     pass
     idCount -= 1
     conn.close()
+    game.remove_player(name)
             
-    # print('Lost Connection')
+    print(f'{name} Lost Connection')
     # conn.close()
 
 
@@ -79,3 +87,5 @@ while True:
 
     start_new_thread(threaded_client, (conn, p))
     p += 1
+    if p == 255:
+        p = 0

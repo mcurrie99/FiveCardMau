@@ -61,15 +61,23 @@
 
 import json
 
-names = {'Matt': [0, True], 'Dean':[1, False], 'Shea':[1, False], 'Patrick':[1, False]}
-
-
-for i, j in enumerate(names):
-    print(j)
-    for k in range(0, len(names[j])):
-        del names[j][0]
+names = {'Matt': [0, True]}
+del names['Matt']
 print(names)
+# , 'Dean':[1, False], 'Shea':[1, False], 'Patrick':[1, False]}
 
+# try:
+#     for i, j in enumerate(names):
+#         # print(j)
+#         del names[j]
+#         print(names)
+#         # for k in range(0, len(names[j])):
+#         #     del names[j]
+#         #     print(names)
+#     print(names)
+# except:
+#     print('All names deleted')
+#     print(names)
 
 
 # try:
