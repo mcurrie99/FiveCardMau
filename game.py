@@ -11,14 +11,15 @@ class Game:
         self.topCard = 'ace_of_spades'
         self.started = False
         self.player_count = 0
-        self.votes = 0
+        self.votes = {}
+        self.voters = 0
 
     def deal(self):
         """
         :param p: [0,1]
         :return: Move
         """
-        return self.moves[p]
+        pass
 
     def play(self, player, move):
         self.moves[player] = move
@@ -30,11 +31,11 @@ class Game:
     def player_went(self):
         return self.started
 
-    def bothWent(self):
-        return self.p1Went and self.p2Went
 
     def add_player(self, Name, playerid):
         self.players.update({Name:[playerid, False]})
+        self.hand.update({Name:{'Hand':[],'Waiting':[]}})
+        self.votes.update({Name: [False]})
         host = False
         for i, j in enumerate(self.players):
             if self.players[j][1] == True:
@@ -44,11 +45,27 @@ class Game:
 
     def remove_player(self, Name):
         new_host = False
+        temp = []
         try:
             if self.players[Name][1] == True:
                 new_host = True
             del self.players[Name]
-            self.find_new_host()
+            del self.votes[Name]
+            if self.started == True:
+                try:
+                    for i in self.hand[Name]['Hand']:
+                        temp.append(i)
+                    for i in self.hand[Name]['Waiting']:
+                        temp.append(i)
+                    for i in range(0, len(temp)):
+                        self.cards['Cards'].append(i)
+                    del self.hand[Name]
+                except:
+                    pass
+            elif self.started == False:
+                self.check_votes()
+            if new_host == True:
+                self.find_new_host()
         except:
             print(f'Could not delete player: {Name}')
 
@@ -96,10 +113,14 @@ class Game:
         self.started = True
         with open('Cards.json') as json_file:
             self.cards = json.load(json_file)
+        self.deal()
+        self.votes = 0
         return self.started
 
-    def vote(self):
-        self.votes += 1
+    def vote(self, Name):
+        self.votes[Name] = True
+        print(f'{Name} has voted')
+        self.check_votes()
 
     def get_game_started(self):
         return self.started
@@ -108,3 +129,11 @@ class Game:
         for i, j in enumerate(self.players):
             if self.players[j][1] == True:
                 return j
+
+    def check_votes(self):
+        self.voters = 0
+        for i, j in enumerate(self.votes):
+            if self.votes[j] == True:
+                self.voters += 1
+        if self.voters == len(self.votes):
+            self.start_game

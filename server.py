@@ -36,6 +36,9 @@ def threaded_client(conn, p):
             data = conn.recv(4096).decode()
             if data == 'get_game':
                 conn.sendall(pickle.dumps(game))
+            elif data == 'voted':
+                game.vote(name)
+                conn.sendall(pickle.dumps(game))
             elif not data:
                 break
             
@@ -56,7 +59,6 @@ def threaded_client(conn, p):
         except:
             break
 
-    print('Lost Connection')
     # try:
     #     del games[gameId]
     #     print('Closing Game: ', gameId)
@@ -67,8 +69,7 @@ def threaded_client(conn, p):
     game.remove_player(name)
             
     print(f'{name} Lost Connection')
-    # conn.close()
-
+    print(game.players)
 
 while True:
     conn, addr = s.accept()
