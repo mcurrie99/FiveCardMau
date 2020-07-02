@@ -208,7 +208,8 @@ def lobby(screen, player, network, name, server):
     voted = False
     lobby = pygame.image.load('background.png')
     # game_over = True
-
+    test = 0
+    # network.change_hand('this', 'works')
     while game == False:
         server = network.get_game()
         player_y = 0
@@ -219,7 +220,10 @@ def lobby(screen, player, network, name, server):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     sys.exit()
-
+        if test == 50:
+            server = network.change_hand('this', 'works')
+            print(server)
+            test += 1
         screen.fill((0,0,0))
         screen.blit(lobby, (0,0))
 
@@ -239,6 +243,7 @@ def lobby(screen, player, network, name, server):
         
         TOTAL_VOTES = Button(screen, f'Total Votes: {server.voters}', 'arial', 35, 50, 980, (255,0,0), False, False)
 
+        test += 1
         pygame.display.update()
     
             
@@ -305,7 +310,9 @@ class Button:
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
         font = pygame.font.SysFont('arial', 40)
         text = font.render(self.text, 1, (255, 255, 255))
-        screen.blit(text, (self.x + round(self.width/2) - round(text.get_width()/2), self.y + round(self.height/2) - round(text.get_height()/2)))
+        text_height = int(text.get_height())
+        text_width = int(text.get_width())
+        screen.blit(text, (self.x + round(self.width/2) - round(text_width/2), self.y + round(self.height/2) - round(text_height/2)))
 
     def click(self):
         pressed = pygame.mouse.get_pressed()[0]
@@ -321,13 +328,13 @@ class Button:
         texter = str(self.text)
         fonter = pygame.font.SysFont(self.font, self.fontsize)
         Render = fonter.render(texter, 1, self.color)
-        self.render_width = Render.get_width()
-        self.render_height = Render.get_height()
+        self.render_width = int(Render.get_width())
+        self.render_height = int(Render.get_height())
         if self.center == True:
-            pygame.draw.rect(self.screen, (0,0,0), (self.x - self.render_width/2 - 10, self.y - self.render_height/2 - 10, self.render_width + 20, self.render_height + 20))
-            self.screen.blit(Render, (self.x - self.render_width/2, self.y - self.render_height/2))
+            pygame.draw.rect(self.screen, (0,0,0), (int(self.x - self.render_width/2 - 10), int(self.y - self.render_height/2 - 10), int(self.render_width + 20), int(self.render_height + 20)))
+            self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
         elif self.center == False:
-            pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, self.render_width + 20, self.render_height + 20))
+            pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
             self.screen.blit(Render, (self.x + 10, self.y + 10))
 
     def hover(self):
@@ -341,7 +348,7 @@ class Button:
             upper_y = self.y - self.render_height/2
             lower_y = self.y + self.render_height/2 + 10
             if ((mouse_x <= upper_x) and (mouse_x >= lower_x)) and ((mouse_y >= upper_y) and (mouse_y <= lower_y)):
-                pygame.draw.rect(self.screen, (255,255,255), (self.x - self.render_width/2 - 20, self.y - self.render_height/2 - 20, self.render_width + 40, self.render_height + 40))
+                pygame.draw.rect(self.screen, (255,255,255), (int(self.x - self.render_width/2 - 20), int(self.y - self.render_height/2 - 20), int(self.render_width + 40), int(self.render_height + 40)))
                 self.draw_text()
                 return self.click()
             else:
@@ -352,7 +359,7 @@ class Button:
             upper_y = self.y
             lower_y = self.y + self.render_height + 10
             if ((mouse_x <= upper_x) and (mouse_x >= lower_x)) and ((mouse_y >= upper_y) and (mouse_y <= lower_y)):
-                pygame.draw.rect(self.screen, (255,255,255), (self.x - 10, self.y - 10, self.render_width + 40, self.render_height + 40))
+                pygame.draw.rect(self.screen, (255,255,255), (self.x - 10, self.y - 10, int(self.render_width + 40), int(self.render_height + 40)))
                 self.draw_text()
                 return self.click()
             else:

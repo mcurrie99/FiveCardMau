@@ -39,6 +39,14 @@ def threaded_client(conn, p):
             elif data == 'voted':
                 game.vote(name)
                 conn.sendall(pickle.dumps(game))
+            elif data == 'change_hand':
+                conn.send(str.encode('receive 1'))
+                new_hand = conn.recv(2048).decode()
+                conn.send(str.encode('receive 2'))
+                new_wait = conn.recv(2048).decode()
+                conn.sendall(pickle.dumps(game))
+                print(new_hand)
+                print(new_wait)
             elif not data:
                 break
             
