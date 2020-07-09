@@ -15,7 +15,7 @@ try:
 except socket.error as e:
     str(e)
 
-s.listen(2)
+s.listen(6)
 print('Waiting for a connection, Server Started')
 
 connected = set()
@@ -41,15 +41,15 @@ def threaded_client(conn, p):
                 conn.sendall(pickle.dumps(game))
             elif data == 'change_hand':
                 conn.send(str.encode('receive 1'))
-                new_hand = conn.recv(2048).decode()
-                conn.send(str.encode('receive 2'))
                 new_wait = conn.recv(2048).decode()
+                conn.send(str.encode('receive 2'))
+                new_hand = conn.recv(2048).decode()
+                game.change_hand(name, new_wait, new_hand)
                 conn.sendall(pickle.dumps(game))
-                print(new_hand)
-                print(new_wait)
+            elif data == 'Winner':
+                game.change_winner(name)
             elif not data:
                 break
-            
 
         #     if gameId in games:
         #         game = games[gameId]
@@ -78,6 +78,7 @@ def threaded_client(conn, p):
             
     print(f'{name} Lost Connection')
     print(game.players)
+    game.empty_lobby()
 
 while True:
     conn, addr = s.accept()

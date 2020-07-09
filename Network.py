@@ -15,34 +15,34 @@ class Network:
             return self.client.recv(2048).decode()
         except:
             pass
-    def change_hand(self, new_hand, new_wait):
+    def change_hand(self, new_wait, new_hand ):
         try:
             self.client.send(str.encode('change_hand'))
             if self.client.recv(2048).decode() == 'receive 1':
                 print('1')
-                self.client.send(str.encode(new_hand))
+                self.client.send(str.encode(new_wait))
                 print('work 1')
             else:
                 return 'error 1'
             if self.client.recv(2048).decode() == 'receive 2':
-                self.client.send(str.encode(new_wait))
+                self.client.send(str.encode(new_hand))
                 print('work 2')
             else:
                 return 'error 2'
-            return pickle.loads(self.client.recv(4096))
+            return pickle.loads(self.client.recv(8192*2))
         except socket.error as e:
             print(e)
     def get_game(self):
         try:
             self.client.send(str.encode('get_game'))
-            return pickle.loads(self.client.recv(4096))
+            return pickle.loads(self.client.recv(8192*2))
         except socket.error as e:
             print(e)
 
     def send(self, data):
         try:
             self.client.send(str.encode(data))
-            return pickle.loads(self.client.recv(4096))
+            return pickle.loads(self.client.recv(8192*2))
         except socket.error as e:
             print(e)
 

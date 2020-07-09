@@ -43,8 +43,8 @@ def main():
     pygame.display.set_caption('Five Card Mau')
     
     # Background Music
-    mixer.music.load('music.mp3')
-    mixer.music.play(-1)
+    # mixer.music.load('music.mp3')
+    # mixer.music.play(-1)
 
     main_menu(screen, name, n)
 
@@ -90,26 +90,18 @@ def connect_server(screen, name, network):
             # pass
 
     # Starts game
-    player = 1
-    game(screen, network, player)
+    # player = 1
+    # game(screen, network, player)
 
 
     
 
 
-def game(screen, n, player):
+def game(screen, network, player, server, name):
     global WIDTH
     global HEIGTH
     global background
     voted = False
-    hand = {}
-
-    #Card Placement
-    text = 'Place Card(s) Here'
-    tap = "TAP!"
-    myFont = pygame.font.SysFont('arial', 29)
-    card_placer = myFont.render(text, 1, (255, 255, 255))
-    TAP = myFont.render(tap, 1, (255, 255, 255))
 
     #Background
     background = pygame.image.load('background.png')
@@ -124,30 +116,49 @@ def game(screen, n, player):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     sys.exit()
-    
+        server = network.get_game()
         # Resets screen
         screen.fill((0,0,0))
         screen.blit(background, (0,0))
+
+        if server.winner == True:
+            break
         
-        #Hovering whites
-        place_card(screen, card_hold)
-        tapper(screen, card_hold)
+        # Creates and draws cards that the player holds
+        CARD1 = Card(screen, server.hand[name]['Hand'][0], 100, 680)
+        CARD2 = Card(screen, server.hand[name]['Hand'][1], 590, 680)
+        CARD3 = Card(screen, server.hand[name]['Hand'][2], 1080, 680)
+        CARD4 = Card(screen, server.hand[name]['Hand'][3], 1570, 680)
+        try:
+            WAITING = Card(screen, server.hand[name]['Waiting'][0], 1570, 680)
+        except:
+            WAITING = False
 
-        # Where to place cards
-        pygame.draw.rect(screen, (0,0,0), (1604,50, Card_x, Card_y))
-        screen.blit(card_placer, (1610,230))
+        PASS = Button(screen, 'Pass', 'arial', 90, 150, 150, (255,255,255), False, False)
 
-        # Tap Button
-        pygame.draw.circle(screen, (0,0,0), (500, 225), 100)
-        screen.blit(TAP, (470,212))
+        # Draws square under the card the player is hovering over and sends data to server
+        if CARD1.hover() == True and WAITING != False:
+            network.change_hand(server.hand[name]['Hand'][0], server.hand[name]['Waiting'[0]])
+        if CARD2.hover() == True and WAITING != False:
+            network.change_hand(server.hand[name]['Hand'][1], server.hand[name]['Waiting'[0]])
+        if CARD3.hover() == True and WAITING != False:
+            network.change_hand(server.hand[name]['Hand'][2], server.hand[name]['Waiting'[0]])
+        if CARD4.hover() == True and WAITING != False:
+            network.change_hand(server.hand[name]['Hand'][3], server.hand[name]['Waiting'[0]])
+        if PASS.hover() == True and WAITING != False:
+            network.change_hand('Pass', server.hand[name]['Waiting'][0])
+        
 
-        # Place Cards
-        pygame.draw.rect(screen, (0,0,0), (1604, 500, 186, 100))
+        # Might use not sure yet
+        # WAITING.hover()
+        
 
-        # Reset Place Card
-        pygame.draw.rect(screen, (0,0,0), (1810, 500, 100, 100))
+        player_y = 100
+        for i, j in enumerate(server.players):
+            PLAYER = Button(screen, j, 'arial', 60, 960, player_y, (255,255,255), False, True)
+            player_y = PLAYER.render_height + 50
 
-        card_held(screen)
+        check_winner(screen, name, server, network)
 
         pygame.display.update()
 
@@ -204,14 +215,14 @@ def tapper(screen, card_hold):
     
 def lobby(screen, player, network, name, server):
     global game_over
-    game = False
+    gamer = False
     voted = False
     lobby = pygame.image.load('background.png')
     # game_over = True
-    test = 0
     # network.change_hand('this', 'works')
-    while game == False:
+    while gamer == False:
         server = network.get_game()
+        started = server.started
         player_y = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -220,10 +231,6 @@ def lobby(screen, player, network, name, server):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     sys.exit()
-        if test == 50:
-            server = network.change_hand('this', 'works')
-            print(server)
-            test += 1
         screen.fill((0,0,0))
         screen.blit(lobby, (0,0))
 
@@ -243,8 +250,14 @@ def lobby(screen, player, network, name, server):
         
         TOTAL_VOTES = Button(screen, f'Total Votes: {server.voters}', 'arial', 35, 50, 980, (255,0,0), False, False)
 
-        test += 1
+        if server.winner_name != '':
+            WINNER_NAME = Button(screen, f'{server.winner_name} won the last game', 'arial', 50, WIDTH/2, 200, (0,255,0), False, True)
+
         pygame.display.update()
+
+        if started == True:
+            game(screen, network, player, server, name)
+
     
             
 def main_menu(screen, name, network):
@@ -273,6 +286,19 @@ def main_menu(screen, name, network):
             connect_server(screen, name, network)
 
         pygame.display.update()
+
+# Decides if person is elgible to win
+def check_winner(screen, name, server, network):
+    Card1 = server.hand[name]['Hand'][0].split('_')
+    Card2 = server.hand[name]['Hand'][1].split('_')
+    Card3 = server.hand[name]['Hand'][2].split('_')
+    Card4 = server.hand[name]['Hand'][3].split('_')
+
+    if (Card1[0] == Card2[0]) and (Card1[0] == Card3[0]) and (Card1[0] == Card4[0]):
+        WINNER = Button(screen, 'Winner', 'arial', 60, WIDTH/2, 730, (0,255,0), False, True)
+        if WINNER.hover() == True:
+            network.send('Winner')
+
 
 
 
@@ -344,8 +370,8 @@ class Button:
         clicked = False
         if self.center == True:
             upper_x = self.x + self.render_width/2 + 10
-            lower_x = self.x - self.render_width/2
-            upper_y = self.y - self.render_height/2
+            lower_x = self.x - self.render_width/2 - 10
+            upper_y = self.y - self.render_height/2 - 10
             lower_y = self.y + self.render_height/2 + 10
             if ((mouse_x <= upper_x) and (mouse_x >= lower_x)) and ((mouse_y >= upper_y) and (mouse_y <= lower_y)):
                 pygame.draw.rect(self.screen, (255,255,255), (int(self.x - self.render_width/2 - 20), int(self.y - self.render_height/2 - 20), int(self.render_width + 40), int(self.render_height + 40)))
@@ -364,6 +390,49 @@ class Button:
                 return self.click()
             else:
                 return False
+
+class Card:
+    '''
+    screen = pygame screen that is being used
+    card = card name that is being used
+    x = the x location for where the card will be placed
+    y = the y location for where the card will be placed
+    '''
+    def __init__(self, screen, card, x, y):
+        self.screen = screen
+        self.card = card
+        self.x = x
+        self.y = y
+        self.draw()
+
+    def draw(self):
+        self.location = pygame.image.load(f'Playing_Cards/{self.card}.png')
+        self.location = pygame.transform.rotozoom(self.location, 0, .5)
+        self.screen.blit(self.location, (self.x, self.y))
+
+    def hover(self):
+        pos = pygame.mouse.get_pos()
+        mouse_x = pos[0]
+        mouse_y = pos[1]
+        clicked = False
+        upper_x = self.x + 250
+        lower_x = self.x
+        upper_y = self.y
+        lower_y = self.y + 363
+        if ((mouse_x <= upper_x) and (mouse_x >= lower_x)) and ((mouse_y >= upper_y) and (mouse_y <= lower_y)):
+            pygame.draw.rect(self.screen, (0,0,0), (self.x - 10, self.y - 10, int(270), int(383)))
+            self.draw()
+            return self.click()
+        else:
+            return False
+    def click(self):
+        pressed = pygame.mouse.get_pressed()[0]
+        if pressed == True:
+            return True
+        else:
+            return False
+
+
         
 
 

@@ -59,11 +59,12 @@
 #     print(data["Cards"][i])
 # print(len(data["Cards"]))
 
-import json
+# import json
 
 names = {'Matt': [0, True], 'Dean':[1, False], 'Shea':[1, False], 'Patrick':[1, False]}
-test = {'Matt': {'Hand': ['four', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}, 'Dean':{'Hand': ['four', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}}
-print(len(test))
+test = {'Matt': {'Hand': ['four_there', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}, 'Dean':{'Hand': ['four', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}}
+tester = test['Matt']['Hand'][0].split('_')
+print(tester)
 
 
 # try:
@@ -92,4 +93,3 @@ print(len(test))
 #         pass
 # except:
 #     pass
-
