@@ -65,6 +65,7 @@ names = {'Matt': [0, True], 'Dean':[1, False], 'Shea':[1, False], 'Patrick':[1, 
 test = {'Matt': {'Hand': ['four_there', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}, 'Dean':{'Hand': ['four', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}}
 tester = test['Matt']['Hand'][0].split('_')
 print(tester)
+print(test)
 
 
 # try:

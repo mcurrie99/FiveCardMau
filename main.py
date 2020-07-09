@@ -106,7 +106,7 @@ def game(screen, network, player, server, name):
     #Background
     background = pygame.image.load('background.png')
 
-
+    WAIT = 0
     # Game
     while not game_over:
         for event in pygame.event.get():
@@ -130,24 +130,28 @@ def game(screen, network, player, server, name):
         CARD3 = Card(screen, server.hand[name]['Hand'][2], 1080, 680)
         CARD4 = Card(screen, server.hand[name]['Hand'][3], 1570, 680)
         try:
-            WAITING = Card(screen, server.hand[name]['Waiting'][0], 1570, 680)
+            WAITING = Card(screen, server.hand[name]['Waiting'][0], 1570, 100)
         except:
             WAITING = False
 
         PASS = Button(screen, 'Pass', 'arial', 90, 150, 150, (255,255,255), False, False)
 
         # Draws square under the card the player is hovering over and sends data to server
-        if CARD1.hover() == True and WAITING != False:
-            network.change_hand(server.hand[name]['Hand'][0], server.hand[name]['Waiting'[0]])
-        if CARD2.hover() == True and WAITING != False:
-            network.change_hand(server.hand[name]['Hand'][1], server.hand[name]['Waiting'[0]])
-        if CARD3.hover() == True and WAITING != False:
-            network.change_hand(server.hand[name]['Hand'][2], server.hand[name]['Waiting'[0]])
-        if CARD4.hover() == True and WAITING != False:
-            network.change_hand(server.hand[name]['Hand'][3], server.hand[name]['Waiting'[0]])
-        if PASS.hover() == True and WAITING != False:
+        if CARD1.hover() == True and WAITING != False and WAIT == 100:
+            network.change_hand(server.hand[name]['Hand'][0], server.hand[name]['Waiting'][0])
+            WAIT = 0
+        if CARD2.hover() == True and WAITING != False and WAIT == 100:
+            network.change_hand(server.hand[name]['Hand'][1], server.hand[name]['Waiting'][0])
+            WAIT = 0
+        if CARD3.hover() == True and WAITING != False and WAIT == 100:
+            network.change_hand(server.hand[name]['Hand'][2], server.hand[name]['Waiting'][0])
+            WAIT = 0
+        if CARD4.hover() == True and WAITING != False and WAIT == 100:
+            network.change_hand(server.hand[name]['Hand'][3], server.hand[name]['Waiting'][0])
+            WAIT = 0
+        if PASS.hover() == True and WAITING != False and WAIT == 100:
             network.change_hand('Pass', server.hand[name]['Waiting'][0])
-        
+            WAIT = 0
 
         # Might use not sure yet
         # WAITING.hover()
@@ -159,6 +163,9 @@ def game(screen, network, player, server, name):
             player_y = PLAYER.render_height + 50
 
         check_winner(screen, name, server, network)
+
+        if WAIT < 100:
+            WAIT += 4
 
         pygame.display.update()
 
@@ -257,6 +264,7 @@ def lobby(screen, player, network, name, server):
 
         if started == True:
             game(screen, network, player, server, name)
+            voted = False
 
     
             

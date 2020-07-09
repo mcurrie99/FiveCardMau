@@ -29,20 +29,20 @@ class Network:
                 print('work 2')
             else:
                 return 'error 2'
-            return pickle.loads(self.client.recv(8192*2))
+            return pickle.loads(self.client.recv(1000000000))
         except socket.error as e:
             print(e)
     def get_game(self):
         try:
             self.client.send(str.encode('get_game'))
-            return pickle.loads(self.client.recv(8192*2))
+            return pickle.loads(self.client.recv(1000000000))
         except socket.error as e:
             print(e)
 
     def send(self, data):
         try:
             self.client.send(str.encode(data))
-            return pickle.loads(self.client.recv(8192*2))
+            return pickle.loads(self.client.recv(1000000000))
         except socket.error as e:
             print(e)
 

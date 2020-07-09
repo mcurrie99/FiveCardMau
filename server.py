@@ -2,6 +2,7 @@ import socket
 from _thread import *
 from game import Game
 import pickle
+import sys
 
 server = "192.168.1.184"
 port = 5555
@@ -48,6 +49,7 @@ def threaded_client(conn, p):
                 conn.sendall(pickle.dumps(game))
             elif data == 'Winner':
                 game.change_winner(name)
+                print(len(conn.sendall(pickle.dumps(game))))
             elif not data:
                 break
 

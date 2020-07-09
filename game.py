@@ -8,7 +8,6 @@ class Game:
         self.players = {}
         self.hand = {}
         self.started = False
-        self.player_count = 0
         self.votes = {}
         self.voters = 0
         self.order = []
@@ -33,15 +32,7 @@ class Game:
             r = random.randint(0, len(self.cards['Cards']))
             self.hand[self.order[0]]['Waiting'].append(self.cards['Cards'][r])
             self.cards['Cards'].pop(r)
-
-    def play(self, player, move):
-        if player == 0:
-            self.p1Went = True
-        else:
-            self.p2Went = True
-        
-    def player_went(self):
-        return self.started
+            print(len(self.cards['Cards']))
 
 
     def add_player(self, Name, playerid):
@@ -60,7 +51,6 @@ class Game:
         new_host = False
         temp = []
         try:
-            print(1)
             if self.players[Name][1] == True:
                 new_host = True
             del self.players[Name]
@@ -144,7 +134,7 @@ class Game:
             self.end_game()
 
     def change_hand(self, name, new_wait, new_hand):
-        if new_hand != 'Pass':
+        if new_wait != 'Pass':
             spot_hand = self.hand[name]['Hand'].index(new_wait)
             spot_wait = self.hand[name]['Waiting'].index(new_hand)
             self.hand[name]['Waiting'][spot_wait] = new_wait
@@ -156,7 +146,9 @@ class Game:
             try:
                 on_deck_person = self.order[on_deck]
                 self.hand[on_deck_person]['Waiting'].append(new_hand)
+                print('Transferred to next player')
             except:
                 self.cards['Cards'].append(new_hand)
+                print('Added to Deck')
         if self.order.index(name) == 0:
             self.rotate_cards()
