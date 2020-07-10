@@ -121,9 +121,6 @@ def game(screen, network, player, server, name):
         screen.fill((0,0,0))
         screen.blit(background, (0,0))
 
-        if server.winner == True:
-            break
-        
         # Creates and draws cards that the player holds
         CARD1 = Card(screen, server.hand[name]['Hand'][0], 100, 680)
         CARD2 = Card(screen, server.hand[name]['Hand'][1], 590, 680)
@@ -165,9 +162,12 @@ def game(screen, network, player, server, name):
         check_winner(screen, name, server, network)
 
         if WAIT < 100:
-            WAIT += 4
+            WAIT += 5
 
         pygame.display.update()
+
+        if server.winner == True:
+            break
 
 def place_card(screen, card_hold):
 
@@ -207,15 +207,6 @@ def card_held(screen):
         temp[1] = store[1]
         card_hold = False
 
-def tapper(screen, card_hold):
-    # You might not need this
-    pos = pygame.mouse.get_pos()
-
-    if card_hold == False and (pos[0] >= 400 and pos[0] <= 600 and pos[1] >= 125 and pos[1] <= 325):
-        pygame.draw.circle(screen, (255,255,255), (500, 225), 120)
-    else:
-        pass
-
 # def card_move(screen, dif_x, dif_y):
 #     pygame.draw.rect(screen, (0,0,0), (1604,50, Card_x, Card_y)
     
@@ -225,11 +216,11 @@ def lobby(screen, player, network, name, server):
     gamer = False
     voted = False
     lobby = pygame.image.load('background.png')
+    print('Checkpoint')
     # game_over = True
     # network.change_hand('this', 'works')
     while gamer == False:
         server = network.get_game()
-        started = server.started
         player_y = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -262,7 +253,7 @@ def lobby(screen, player, network, name, server):
 
         pygame.display.update()
 
-        if started == True:
+        if server.started == True:
             game(screen, network, player, server, name)
             voted = False
 

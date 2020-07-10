@@ -61,11 +61,11 @@
 
 # import json
 
-names = {'Matt': [0, True], 'Dean':[1, False], 'Shea':[1, False], 'Patrick':[1, False]}
-test = {'Matt': {'Hand': ['four_there', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}, 'Dean':{'Hand': ['four', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}}
-tester = test['Matt']['Hand'][0].split('_')
-print(tester)
-print(test)
+# names = {'Matt': [0, True], 'Dean':[1, False], 'Shea':[1, False], 'Patrick':[1, False]}
+# test = {'Matt': {'Hand': ['four_there', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}, 'Dean':{'Hand': ['four', 'five', 'eight'], 'Waiting':['nine','twelve','thirteen']}}
+# tester = test['Matt']['Hand'][0].split('_')
+# print(tester)
+# print(test)
 
 
 # try:
@@ -94,3 +94,10 @@ print(test)
 #         pass
 # except:
 #     pass
+
+
+import struct
+
+buf = b''
+
+print(len(buf))

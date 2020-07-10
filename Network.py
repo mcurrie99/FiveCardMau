@@ -1,5 +1,6 @@
 import socket
 import pickle
+import struct
 
 class Network:
     def __init__(self):
@@ -19,30 +20,41 @@ class Network:
         try:
             self.client.send(str.encode('change_hand'))
             if self.client.recv(2048).decode() == 'receive 1':
-                print('1')
                 self.client.send(str.encode(new_wait))
-                print('work 1')
             else:
                 return 'error 1'
             if self.client.recv(2048).decode() == 'receive 2':
                 self.client.send(str.encode(new_hand))
-                print('work 2')
             else:
                 return 'error 2'
-            return pickle.loads(self.client.recv(1000000000))
+            buf = b''
+            while len(buf) < 4:
+                buf += self.client.recv(4-len(buf))
+            length = struct.unpack('!I', buf)[0]
+            print(length)
+            return pickle.loads(self.client.recv(length))
         except socket.error as e:
             print(e)
     def get_game(self):
         try:
+            # Testing new sending details to avoid random crashing
             self.client.send(str.encode('get_game'))
-            return pickle.loads(self.client.recv(1000000000))
+            buf = b''
+            while len(buf) < 4:
+                buf += self.client.recv(4-len(buf))
+            length = struct.unpack('!I', buf)[0]
+            return pickle.loads(self.client.recv(length))
         except socket.error as e:
             print(e)
 
     def send(self, data):
         try:
             self.client.send(str.encode(data))
-            return pickle.loads(self.client.recv(1000000000))
+            buf = b''
+            while len(buf) < 4:
+                buf += self.client.recv(4-len(buf))
+            length = struct.unpack('!I', buf)[0]
+            return pickle.loads(self.client.recv(length))
         except socket.error as e:
             print(e)
 

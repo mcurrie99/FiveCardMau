@@ -3,6 +3,7 @@ from _thread import *
 from game import Game
 import pickle
 import sys
+import struct
 
 server = "192.168.1.184"
 port = 5555
@@ -36,20 +37,33 @@ def threaded_client(conn, p):
         try:
             data = conn.recv(4096).decode()
             if data == 'get_game':
-                conn.sendall(pickle.dumps(game))
+                packet = pickle.dumps(game)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
             elif data == 'voted':
                 game.vote(name)
-                conn.sendall(pickle.dumps(game))
+                packet = pickle.dumps(game)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
             elif data == 'change_hand':
                 conn.send(str.encode('receive 1'))
                 new_wait = conn.recv(2048).decode()
                 conn.send(str.encode('receive 2'))
                 new_hand = conn.recv(2048).decode()
                 game.change_hand(name, new_wait, new_hand)
-                conn.sendall(pickle.dumps(game))
+                packet = pickle.dumps(game)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
             elif data == 'Winner':
+                print('Winner')
                 game.change_winner(name)
-                print(len(conn.sendall(pickle.dumps(game))))
+                packet = pickle.dumps(game)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
             elif not data:
                 break
 
@@ -77,10 +91,10 @@ def threaded_client(conn, p):
     idCount -= 1
     conn.close()
     game.remove_player(name)
+    game.empty_lobby()
             
     print(f'{name} Lost Connection')
     print(game.players)
-    game.empty_lobby()
 
 while True:
     conn, addr = s.accept()

@@ -15,10 +15,6 @@ class Game:
         self.winner_name = ''
 
     def deal(self):
-        """
-        :param p: [0,1]
-        :return: Move
-        """
         for i, j in enumerate(self.hand):
             for k in range(0,4):
                 r = random.randint(0, len(self.cards['Cards']))
@@ -29,10 +25,10 @@ class Game:
 
     def rotate_cards(self):
         if len(self.hand[self.order[0]]['Waiting']) == 0:
-            r = random.randint(0, len(self.cards['Cards']))
+            r = random.randint(0, len(self.cards['Cards']) - 1)
             self.hand[self.order[0]]['Waiting'].append(self.cards['Cards'][r])
             self.cards['Cards'].pop(r)
-            print(len(self.cards['Cards']))
+            # print(len(self.cards['Cards']))
 
 
     def add_player(self, Name, playerid):
@@ -54,6 +50,8 @@ class Game:
             if self.players[Name][1] == True:
                 new_host = True
             del self.players[Name]
+            if self.votes[Name][0] == True:
+                self.voters -=  1
             del self.votes[Name]
             self.order.remove(Name)
             if self.started == True:
@@ -65,6 +63,7 @@ class Game:
                     for i in range(0, len(temp)):
                         self.cards['Cards'].append(i)
                     del self.hand[Name]
+                    self.empty_lobby()
                 except:
                     pass
             elif self.started == False:
@@ -73,6 +72,7 @@ class Game:
                 self.find_new_host()
             for i in range(0, len(temp)):
                 temp.pop(0)
+            print(f'{Name} was removed from the game')
         except:
             print(f'Could not delete player: {Name}')
 
@@ -90,16 +90,26 @@ class Game:
             pass
 
     def change_winner(self, name):
+        print('changing winner')
         self.winner = True
         self.winner_name = name
-        self.end_game
+        self.end_game()
         
     
     def end_game(self):
         self.started = False
         for i, j in enumerate(self.hand):
-            for k in range(0, len(self.hand[j])):
-                del self.hand[j][0]
+            for k in range(0, len(self.hand[j]['Hand'])):
+                self.cards['Cards'].append(self.hand[j]['Hands'][0])
+                self.hand[j]['Hand'].pop(0)
+            try:
+                for k in range(0, len(self.hand[j]['Waiting'])):
+                    self.cards[j]['Cards'].append(['Waiting'].pop(0))
+                    self.hand[j]['Waiting'].pop(0)
+            except:
+                print('No Cards Waiting or Error')
+        for i, j in enumerate(self.votes):
+            self.votes[j][0] = False
         print('Game Ended')
         print(len(self.cards['Cards']))
         return self.started
@@ -107,7 +117,7 @@ class Game:
     def start_game(self):
         self.started = True
         self.deal()
-        self.voters = 0
+        self.winner = False
         print('Starting Game')
         return self.started
 
@@ -123,14 +133,17 @@ class Game:
 
     def check_votes(self):
         self.voters = 0
-        for i, j in enumerate(self.votes):
-            if self.votes[j][0] == True:
-                self.voters += 1
-        if self.voters == len(self.votes):
+        if len(self.players) > 0:
+            for i, j in enumerate(self.votes):
+                if self.votes[j][0] == True:
+                    self.voters += 1
+        else:
+            self.empty_lobby()
+        if self.voters == len(self.votes) and self.voters > 0:
             self.start_game()
 
     def empty_lobby(self):
-        if len(self.players) == 0:
+        if len(self.players) == 0 and self.started == True:
             self.end_game()
 
     def change_hand(self, name, new_wait, new_hand):
@@ -149,6 +162,6 @@ class Game:
                 print('Transferred to next player')
             except:
                 self.cards['Cards'].append(new_hand)
-                print('Added to Deck')
+                # print('Added to Deck')
         if self.order.index(name) == 0:
             self.rotate_cards()
