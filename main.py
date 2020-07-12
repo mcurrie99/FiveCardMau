@@ -62,7 +62,7 @@ def connect_server(screen, name, network):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     sys.exit()
-        if game_over == True:
+        if close_game == True:
                 sys.exit()
         try:
             player = int(network.connect(name))
@@ -71,7 +71,7 @@ def connect_server(screen, name, network):
             lobby(screen, player, network, name, server)
             break
         except:
-            if game_over == True:
+            if close_game == True:
                 sys.exit()
             if count == 0:
                 connectingText = f'Connecting {name} to Server'
