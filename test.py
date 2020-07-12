@@ -95,38 +95,42 @@
 # except:
 #     pass
 
-import random
-import json
+# import random
+# import json
 
-with open('Cards.json') as json_file:
-            cards = json.load(json_file)
+# with open('Cards.json') as json_file:
+#             cards = json.load(json_file)
 
-hand = {'Matt':{'Hand':[],'Waiting':[]}}
+# hand = {'Matt':{'Hand':[],'Waiting':[]}}
 
-for i, j in enumerate(hand):
-            for k in range(0,4):
-                r = random.randint(0, len(cards['Cards']))
-                print(r)
-                hand[j]['Hand'].append(cards['Cards'][r])
-                cards['Cards'].pop(r)
-print('Dealt Cards')
+# for i, j in enumerate(hand):
+#             for k in range(0,4):
+#                 r = random.randint(0, len(cards['Cards']))
+#                 print(r)
+#                 hand[j]['Hand'].append(cards['Cards'][r])
+#                 cards['Cards'].pop(r)
+# print('Dealt Cards')
 
-if len(hand['Matt']['Waiting']) == 0:
-            r = random.randint(0, len(cards['Cards']) - 1)
-            hand['Matt']['Waiting'].append(cards['Cards'][r])
-            cards['Cards'].pop(r)
+# if len(hand['Matt']['Waiting']) == 0:
+#             r = random.randint(0, len(cards['Cards']) - 1)
+#             hand['Matt']['Waiting'].append(cards['Cards'][r])
+#             cards['Cards'].pop(r)
 
-print('Ending Game')
-for i, j in enumerate(hand):
-    print(j)
-    for k in range(0, len(hand[j]['Hand'])):
-        cards['Cards'].append(hand[j]['Hand'][0])
-        hand[j]['Hand'].pop(0)
-    try:
-        for k in range(0, len(hand[j]['Waiting'])):
-            print(hand['Matt']['Waiting'][0])
-            cards['Cards'].append(hand[j]['Waiting'][0])
-            hand[j]['Waiting'].pop(0)
-    except:
-        print('No Cards Waiting or Error')
-print(len(cards['Cards']))
+# print('Ending Game')
+# for i, j in enumerate(hand):
+#     print(j)
+#     for k in range(0, len(hand[j]['Hand'])):
+#         cards['Cards'].append(hand[j]['Hand'][0])
+#         hand[j]['Hand'].pop(0)
+#     try:
+#         for k in range(0, len(hand[j]['Waiting'])):
+#             print(hand['Matt']['Waiting'][0])
+#             cards['Cards'].append(hand[j]['Waiting'][0])
+#             hand[j]['Waiting'].pop(0)
+#     except:
+#         print('No Cards Waiting or Error')
+# print(len(cards['Cards']))
+
+import socket
+
+print(socket.gethostname())
