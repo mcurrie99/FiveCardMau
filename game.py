@@ -22,6 +22,7 @@ class Game:
                 self.hand[j]['Hand'].append(self.cards['Cards'][r])
                 self.cards['Cards'].pop(r)
         self.rotate_cards()
+        print(self.hand)
         print('Dealt Cards')
 
     def rotate_cards(self):

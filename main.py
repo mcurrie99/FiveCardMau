@@ -26,6 +26,7 @@ dif_x = 0
 dif_y = 0
 
 game_over = False
+close_game = False
 
 def main():
     global WIDTH
@@ -50,7 +51,7 @@ def main():
 
 def connect_server(screen, name, network):
     # Initializes connection with server
-    global game_over
+    global close_game
     count = 0
     while True:
         
@@ -100,12 +101,14 @@ def game(screen, network, player, server, name):
     global WIDTH
     global HEIGTH
     global background
+    global game_over
     voted = False
 
     #Background
     background = pygame.image.load('background.png')
 
     WAIT = 0
+    print('Game Started')
     # Game
     while not game_over:
         for event in pygame.event.get():
@@ -118,15 +121,20 @@ def game(screen, network, player, server, name):
         server = network.get_game()
         if server.winner == True:
             break
+            print('test')
         # Resets screen
         screen.fill((0,0,0))
         screen.blit(background, (0,0))
 
         # Creates and draws cards that the player holds
-        CARD1 = Card(screen, server.hand[name]['Hand'][0], 100, 680)
-        CARD2 = Card(screen, server.hand[name]['Hand'][1], 590, 680)
-        CARD3 = Card(screen, server.hand[name]['Hand'][2], 1080, 680)
-        CARD4 = Card(screen, server.hand[name]['Hand'][3], 1570, 680)
+        
+        try:
+            CARD1 = Card(screen, server.hand[name]['Hand'][0], 100, 680)
+            CARD2 = Card(screen, server.hand[name]['Hand'][1], 590, 680)
+            CARD3 = Card(screen, server.hand[name]['Hand'][2], 1080, 680)
+            CARD4 = Card(screen, server.hand[name]['Hand'][3], 1570, 680)
+        except:
+            print('Error at printing cards')
         try:
             WAITING = Card(screen, server.hand[name]['Waiting'][0], 1570, 100)
         except:
@@ -211,12 +219,11 @@ def card_held(screen):
     
     
 def lobby(screen, player, network, name, server):
-    global game_over
+    global close_game
     gamer = False
-    game_over = True
+    close_game = True
     voted = False
     lobby = pygame.image.load('background.png')
-    print('Checkpoint')
     # game_over = True
     # network.change_hand('this', 'works')
     while gamer == False:
