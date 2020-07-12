@@ -17,7 +17,8 @@ class Game:
     def deal(self):
         for i, j in enumerate(self.hand):
             for k in range(0,4):
-                r = random.randint(0, len(self.cards['Cards']))
+                r = random.randint(0, len(self.cards['Cards']) - 1)
+                print(r)
                 self.hand[j]['Hand'].append(self.cards['Cards'][r])
                 self.cards['Cards'].pop(r)
         self.rotate_cards()
@@ -28,7 +29,6 @@ class Game:
             r = random.randint(0, len(self.cards['Cards']) - 1)
             self.hand[self.order[0]]['Waiting'].append(self.cards['Cards'][r])
             self.cards['Cards'].pop(r)
-            # print(len(self.cards['Cards']))
 
 
     def add_player(self, Name, playerid):
@@ -97,20 +97,24 @@ class Game:
         
     
     def end_game(self):
-        self.started = False
+        print('Ending Game')
         for i, j in enumerate(self.hand):
+            print(j)
             for k in range(0, len(self.hand[j]['Hand'])):
-                self.cards['Cards'].append(self.hand[j]['Hands'][0])
+                self.cards['Cards'].append(self.hand[j]['Hand'][0])
                 self.hand[j]['Hand'].pop(0)
             try:
                 for k in range(0, len(self.hand[j]['Waiting'])):
-                    self.cards[j]['Cards'].append(['Waiting'].pop(0))
+                    self.cards['Cards'].append(self.hand[j]['Waiting'][0])
                     self.hand[j]['Waiting'].pop(0)
             except:
                 print('No Cards Waiting or Error')
         for i, j in enumerate(self.votes):
             self.votes[j][0] = False
+        self.started = False
+        self.voters = 0
         print('Game Ended')
+        print(self.votes)
         print(len(self.cards['Cards']))
         return self.started
 

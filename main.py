@@ -117,6 +117,8 @@ def game(screen, network, player, server, name):
                 if event.key == pygame.K_q:
                     sys.exit()
         server = network.get_game()
+        if server.winner == True:
+            break
         # Resets screen
         screen.fill((0,0,0))
         screen.blit(background, (0,0))
@@ -166,8 +168,6 @@ def game(screen, network, player, server, name):
 
         pygame.display.update()
 
-        if server.winner == True:
-            break
 
 def place_card(screen, card_hold):
 
