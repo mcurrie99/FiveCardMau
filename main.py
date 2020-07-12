@@ -61,37 +61,36 @@ def connect_server(screen, name, network):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     sys.exit()
-        # if game_over == True:
-        #         sys.exit()
-        # try:
-        player = int(network.connect(name))
-        print(player)
-        server = network.get_game()
-        lobby(screen, player, network, name, server)
-            # break
-        # except:
-        #     if count == 0:
-        #         connectingText = f'Connecting {name} to Server'
-        #         count = 1
-        #     elif count == 1:
-        #         connectingText = f'Connecting {name} to Server.'
-        #         count = 2
-        #     elif count == 2:
-        #         connectingText = f'Connecting {name} to Server..'
-        #         count = 3
-        #     elif count == 3:
-        #         connectingText = f'Connecting {name} to Server...'
-        #         count = 0
-            # screen.fill((0,0,0))
-            # connectingFont = pygame.font.SysFont('arial', 29)
-            # connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
-            # screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
-            # pygame.display.update()
-            # pass
+        if game_over == True:
+                sys.exit()
+        try:
+            player = int(network.connect(name))
+            print(player)
+            server = network.get_game()
+            lobby(screen, player, network, name, server)
+            break
+        except:
+            if game_over == True:
+                sys.exit()
+            if count == 0:
+                connectingText = f'Connecting {name} to Server'
+                count = 1
+            elif count == 1:
+                connectingText = f'Connecting {name} to Server.'
+                count = 2
+            elif count == 2:
+                connectingText = f'Connecting {name} to Server..'
+                count = 3
+            elif count == 3:
+                connectingText = f'Connecting {name} to Server...'
+                count = 0
+            screen.fill((0,0,0))
+            connectingFont = pygame.font.SysFont('arial', 29)
+            connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
+            screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
+            pygame.display.update()
+            pass
 
-    # Starts game
-    # player = 1
-    # game(screen, network, player)
 
 
     
@@ -159,7 +158,7 @@ def game(screen, network, player, server, name):
         player_y = 100
         for i, j in enumerate(server.players):
             PLAYER = Button(screen, j, 'arial', 60, 960, player_y, (255,255,255), False, True)
-            player_y = PLAYER.render_height + 50
+            player_y = PLAYER.render_height + 250
 
         check_winner(screen, name, server, network)
 
@@ -214,6 +213,7 @@ def card_held(screen):
 def lobby(screen, player, network, name, server):
     global game_over
     gamer = False
+    game_over = True
     voted = False
     lobby = pygame.image.load('background.png')
     print('Checkpoint')
