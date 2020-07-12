@@ -5,7 +5,7 @@ import pickle
 import sys
 import struct
 
-server = "192.168.1.184"
+server = "192.168.1.68"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
