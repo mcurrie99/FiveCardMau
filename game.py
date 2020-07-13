@@ -114,8 +114,6 @@ class Game:
         self.started = False
         self.voters = 0
         print('Game Ended')
-        print(len(self.cards['Cards']))
-        print(self.cards['Cards'])
         return self.started
 
     def start_game(self):
