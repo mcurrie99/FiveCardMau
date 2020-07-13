@@ -61,7 +61,7 @@ class Game:
                         temp.append(i)
                     for i in self.hand[Name]['Waiting']:
                         temp.append(i)
-                    for i in range(0, len(temp)):
+                    for i in temp:
                         self.cards['Cards'].append(i)
                     del self.hand[Name]
                     self.empty_lobby()
@@ -100,7 +100,6 @@ class Game:
     def end_game(self):
         print('Ending Game')
         for i, j in enumerate(self.hand):
-            print(j)
             for k in range(0, len(self.hand[j]['Hand'])):
                 self.cards['Cards'].append(self.hand[j]['Hand'][0])
                 self.hand[j]['Hand'].pop(0)
@@ -115,8 +114,8 @@ class Game:
         self.started = False
         self.voters = 0
         print('Game Ended')
-        print(self.votes)
         print(len(self.cards['Cards']))
+        print(self.cards['Cards'])
         return self.started
 
     def start_game(self):
