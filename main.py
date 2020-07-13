@@ -34,6 +34,7 @@ def main():
     global background
     n = Network()
             
+    print('Enter your game name here')        
     name = input()
 
     # Initializes py game window
@@ -41,7 +42,7 @@ def main():
 
     # Sets up screen size, you could use pygame.RESIZABLE or pygame.FULLSCREEN
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
-    pygame.display.set_caption('Five Card Mau')
+    pygame.display.set_caption('Cards')
     
     # Background Music
     # mixer.music.load('music.mp3')
@@ -66,7 +67,6 @@ def connect_server(screen, name, network):
                 sys.exit()
         try:
             player = int(network.connect(name))
-            print(player)
             server = network.get_game()
             lobby(screen, player, network, name, server)
             break
@@ -108,7 +108,6 @@ def game(screen, network, player, server, name):
     background = pygame.image.load('background.png')
 
     WAIT = 0
-    print('Game Started')
     # Game
     while not game_over:
         for event in pygame.event.get():
@@ -121,7 +120,6 @@ def game(screen, network, player, server, name):
         server = network.get_game()
         if server.winner == True:
             break
-            print('test')
         # Resets screen
         screen.fill((0,0,0))
         screen.blit(background, (0,0))
@@ -129,6 +127,7 @@ def game(screen, network, player, server, name):
         # Creates and draws cards that the player holds
         
         try:
+            print(server.hand[name]['Hand'])
             CARD1 = Card(screen, server.hand[name]['Hand'][0], 100, 680)
             CARD2 = Card(screen, server.hand[name]['Hand'][1], 590, 680)
             CARD3 = Card(screen, server.hand[name]['Hand'][2], 1080, 680)
