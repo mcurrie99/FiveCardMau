@@ -5,6 +5,7 @@ import json
 import time
 from pygame import mixer
 from Network import Network
+import os
 
 # Initial variable for holding cards
 
@@ -45,8 +46,8 @@ def main():
     pygame.display.set_caption('Cards')
     
     # Background Music
-    # mixer.music.load('music.mp3')
-    # mixer.music.play(-1)
+    mixer.music.load('music.mp3')
+    mixer.music.play(-1)
 
     main_menu(screen, name, n)
 
