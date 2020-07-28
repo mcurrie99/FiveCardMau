@@ -46,8 +46,8 @@ def main():
     pygame.display.set_caption('Cards')
     
     # Background Music
-    mixer.music.load('music.mp3')
-    mixer.music.play(-1)
+    # mixer.music.load('music.mp3')
+    # mixer.music.play(-1)
 
     main_menu(screen, name, n)
 
@@ -66,32 +66,32 @@ def connect_server(screen, name, network):
                     sys.exit()
         if close_game == True:
                 sys.exit()
-        try:
-            player = int(network.connect(name))
-            server = network.get_game()
-            lobby(screen, player, network, name, server)
-            break
-        except:
-            if close_game == True:
-                sys.exit()
-            if count == 0:
-                connectingText = f'Connecting {name} to Server'
-                count = 1
-            elif count == 1:
-                connectingText = f'Connecting {name} to Server.'
-                count = 2
-            elif count == 2:
-                connectingText = f'Connecting {name} to Server..'
-                count = 3
-            elif count == 3:
-                connectingText = f'Connecting {name} to Server...'
-                count = 0
-            screen.fill((0,0,0))
-            connectingFont = pygame.font.SysFont('arial', 29)
-            connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
-            screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
-            pygame.display.update()
-            pass
+        # try:
+        player = int(network.connect(name))
+        server = network.get_game()
+        lobby(screen, player, network, name, server)
+        break
+        # except:
+        #     if close_game == True:
+        #         sys.exit()
+        #     if count == 0:
+        #         connectingText = f'Connecting {name} to Server'
+        #         count = 1
+        #     elif count == 1:
+        #         connectingText = f'Connecting {name} to Server.'
+        #         count = 2
+        #     elif count == 2:
+        #         connectingText = f'Connecting {name} to Server..'
+        #         count = 3
+        #     elif count == 3:
+        #         connectingText = f'Connecting {name} to Server...'
+        #         count = 0
+        #     screen.fill((0,0,0))
+        #     connectingFont = pygame.font.SysFont('arial', 29)
+        #     connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
+        #     screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
+        #     pygame.display.update()
+        #     pass
 
 
 
