@@ -58,7 +58,12 @@ class Network:
             return pickle.loads(self.client.recv(length))
         except socket.error as e:
             print(e)
-
+    
+    def send_only(self, data):
+        try:
+            self.client.send(str.encode(data))
+        except socket.error as e:
+            print(e)
     def send_hand(self, hand):
         # Further investigation might conclude that this is not needed if processing is done on server side.
         for i in range(0, len(hand)):

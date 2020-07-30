@@ -267,6 +267,8 @@ def main_menu(screen, name, network):
         if clicked == True:
             network.send('Spoons')
             lobby(screen, name, network)
+        if clicked == False:
+            network.send_only('None')
 
         pygame.display.update()
 
