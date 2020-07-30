@@ -29,11 +29,11 @@ players = []
 def threaded_client(conn, p):
     global idCount
     valid = True
-    name = conn.recv(2048).decode()
     connection = True
 
     while True:
         try:
+            name = conn.recv(2048).decode()
             if len(players) > 0:
                 for i in players:
                     if name == i:
@@ -42,6 +42,7 @@ def threaded_client(conn, p):
             if valid == True:
                 conn.send(str.encode('Good'))
                 players.append(name)
+                break
             else:
                 conn.send(str.encode('Not'))
         except:

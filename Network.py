@@ -1,7 +1,7 @@
 import socket
 import pickle
 import struct
-from game import Game
+from game import *
 
 class Network:
     def __init__(self):
