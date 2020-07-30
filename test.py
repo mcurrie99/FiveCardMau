@@ -131,6 +131,18 @@
 #         print('No Cards Waiting or Error')
 # print(len(cards['Cards']))
 
-import socket
+# import socket
 
-print(socket.gethostname())
+# print(socket.gethostname())
+
+hand = ['matt', 'patt']
+for i in hand:
+    print(i)
+# hand = f.read()
+# print(hand)
+# hand = bytes(hand, 'utf-8')
+# print(hand)
+# hand = pickle.loads(hand)
+# print(hand)
+
+    

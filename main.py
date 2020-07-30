@@ -35,8 +35,7 @@ def main():
     global background
     n = Network()
             
-    print('Enter your game name here')        
-    name = input()
+    connect_server(n)
 
     # Initializes py game window
     pygame.init()
@@ -51,54 +50,30 @@ def main():
 
     main_menu(screen, name, n)
 
-def connect_server(screen, name, network):
+def connect_server(network):
     # Initializes connection with server
     global close_game
     count = 0
-    while True:
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
-                    sys.exit()
-        if close_game == True:
-                sys.exit()
-        # try:
-        player = int(network.connect(name))
-        server = network.get_game()
-        lobby(screen, player, network, name, server)
-        break
-        # except:
-        #     if close_game == True:
-        #         sys.exit()
-        #     if count == 0:
-        #         connectingText = f'Connecting {name} to Server'
-        #         count = 1
-        #     elif count == 1:
-        #         connectingText = f'Connecting {name} to Server.'
-        #         count = 2
-        #     elif count == 2:
-        #         connectingText = f'Connecting {name} to Server..'
-        #         count = 3
-        #     elif count == 3:
-        #         connectingText = f'Connecting {name} to Server...'
-        #         count = 0
-        #     screen.fill((0,0,0))
-        #     connectingFont = pygame.font.SysFont('arial', 29)
-        #     connectingRender = connectingFont.render(connectingText, 1, (255, 255, 255))
-        #     screen.blit(connectingRender, (int(WIDTH/2 - connectingRender.get_width()/2), int(HEIGHT/2 - connectingRender.get_height()/2)))
-        #     pygame.display.update()
-        #     pass
+    while True:
+        print('Enter your game name here')        
+        name = input()
+        player = network.connect(name)
+        if player == 'Good':
+            launch = True
+            break
+        else:
+            print('Name is already taken')
+    # lobby(screen, player, network, name, server)
+        
+
 
 
 
     
 
 
-def game(screen, network, player, server, name):
+def game(screen, network, server, name):
     global WIDTH
     global HEIGTH
     global background
@@ -218,7 +193,7 @@ def card_held(screen):
 #     pygame.draw.rect(screen, (0,0,0), (1604,50, Card_x, Card_y)
     
     
-def lobby(screen, player, network, name, server):
+def lobby(screen, network, name, server):
     global close_game
     gamer = False
     close_game = True
@@ -261,7 +236,7 @@ def lobby(screen, player, network, name, server):
         pygame.display.update()
 
         if server.started == True:
-            game(screen, network, player, server, name)
+            game(screen, network, server, name)
             voted = False
 
     
@@ -289,7 +264,8 @@ def main_menu(screen, name, network):
         JOIN = Button(screen, 'Join', 'arial', 80, WIDTH/2, HEIGHT/2, (255,255,255), False, True)
         clicked = JOIN.hover()
         if clicked == True:
-            connect_server(screen, name, network)
+            network.send('Spoons')
+            lobby(screen, name, network)
 
         pygame.display.update()
 

@@ -1,6 +1,6 @@
 import socket
 from _thread import *
-from game import Game
+from game import *
 import pickle
 import sys
 import struct
@@ -10,7 +10,8 @@ port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-game = Game(0)
+game = Spoons(0)
+
 
 try:
     s.bind((server, port))
@@ -27,11 +28,55 @@ players = []
 
 def threaded_client(conn, p):
     global idCount
-    conn.send(str.encode(str(p)))
-    name = conn.recv(4096).decode()
-    game.add_player(name, p)
-    print(name)
+    valid = True
+    name = conn.recv(2048).decode()
+    connection = True
 
+    while True:
+        try:
+            if len(players) > 0:
+                for i in players:
+                    if name == i:
+                        valid == False
+                        break
+            if valid == True:
+                conn.send(str.encode('Good'))
+                players.append(name)
+            else:
+                conn.send(str.encode('Not'))
+        except:
+            connection = False
+    
+    while True:
+        if connection == True:
+            try:
+                game_join = conn.recv(2048).decode()
+            except:
+                break
+        else:
+            break
+
+
+    if game_join == 'Spoons':
+        spoons_server(name, p)
+
+    # try:
+    #     del games[gameId]
+    #     print('Closing Game: ', gameId)
+    # except:
+    #     pass
+    idCount -= 1
+    conn.close()
+    game.remove_player(name)
+    game.empty_lobby()
+    players.pop(name)
+            
+    print(f'{name} Lost Connection')
+    print(game.players)
+
+
+def spoons_server(name, p):
+    game.add_player(name, p)
     reply = ''
     while True:
         try:
@@ -83,18 +128,6 @@ def threaded_client(conn, p):
         except:
             break
 
-    # try:
-    #     del games[gameId]
-    #     print('Closing Game: ', gameId)
-    # except:
-    #     pass
-    idCount -= 1
-    conn.close()
-    game.remove_player(name)
-    game.empty_lobby()
-            
-    print(f'{name} Lost Connection')
-    print(game.players)
 
 while True:
     conn, addr = s.accept()

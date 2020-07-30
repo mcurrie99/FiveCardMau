@@ -1,7 +1,7 @@
 import json
 import random
 
-class Game:
+class Spoons:
     def __init__(self, id):
         with open('Cards.json') as json_file:
             self.cards = json.load(json_file)
