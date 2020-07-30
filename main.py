@@ -28,6 +28,7 @@ dif_y = 0
 
 game_over = False
 close_game = False
+name = ''
 
 def main():
     global WIDTH
@@ -52,7 +53,7 @@ def main():
 
 def connect_server(network):
     # Initializes connection with server
-    global close_game
+    global name
     count = 0
 
     while True:
