@@ -77,6 +77,7 @@ def threaded_client(conn, p):
             
     print(f'{name} Lost Connection')
     print(game.players)
+    print(players)
 
 
 def spoons_server(name, p):
