@@ -49,15 +49,16 @@ def threaded_client(conn, p):
             connection = False
     
     while True:
-        try:
-            if connection == True:
-                try:
-                    game_join = conn.recv(2048).decode()
-                except:
-                    break
-            else:
+        if connection == True:
+            try:
+                game_join = conn.recv(2048).decode()
+                if game_join == 'None':
+                    pass
+                print(game_join)
+            except:
+                connection = False
                 break
-        except:
+        else:
             break
 
 
