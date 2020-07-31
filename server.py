@@ -33,7 +33,7 @@ def threaded_client(conn, p):
 
     while True:
         try:
-            name = conn.recv(2048).decode()
+            name = conn.recv(4096).decode()
             if len(players) > 0:
                 for i in players:
                     if name == i:
@@ -53,7 +53,13 @@ def threaded_client(conn, p):
             try:
                 game_join = conn.recv(2048).decode()
                 if game_join == 'None':
-                    pass
+                    continue
+                elif game_join == 'Spoons':
+                    spoons_server(name, p)
+                elif not game_join:
+                    break
+                # else:
+                #     break
                 print(game_join)
             except:
                 connection = False
@@ -62,8 +68,7 @@ def threaded_client(conn, p):
             break
 
 
-    if game_join == 'Spoons':
-        spoons_server(name, p)
+    
 
     # try:
     #     del games[gameId]
@@ -72,9 +77,7 @@ def threaded_client(conn, p):
     #     pass
     idCount -= 1
     conn.close()
-    game.remove_player(name)
-    game.empty_lobby()
-    players.pop(name)
+    players.remove(name)
             
     print(f'{name} Lost Connection')
     print(game.players)
@@ -83,6 +86,10 @@ def threaded_client(conn, p):
 
 def spoons_server(name, p):
     game.add_player(name, p)
+    packet = pickle.dumps(game)
+    length = struct.pack('!I', len(packet))
+    packet = length + packet
+    conn.sendall(packet)
     reply = ''
     while True:
         try:
@@ -133,6 +140,9 @@ def spoons_server(name, p):
         #         break
         except:
             break
+    
+    game.remove_player(name)
+    game.empty_lobby()
 
 
 while True:
