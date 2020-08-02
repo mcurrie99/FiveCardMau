@@ -1,6 +1,7 @@
 import socket
 from _thread import *
-from game import *
+# from game import *
+from Spoons import *
 import pickle
 import sys
 import struct
@@ -37,7 +38,7 @@ def threaded_client(conn, p):
             if len(players) > 0:
                 for i in players:
                     if name == i:
-                        valid = False
+                        valid == False
                         break
             if valid == True:
                 conn.send(str.encode('Good'))
