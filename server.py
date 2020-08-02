@@ -37,7 +37,7 @@ def threaded_client(conn, p):
             if len(players) > 0:
                 for i in players:
                     if name == i:
-                        valid == False
+                        valid = False
                         break
             if valid == True:
                 conn.send(str.encode('Good'))

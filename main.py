@@ -33,6 +33,7 @@ def main():
     n = Network()
             
     connect_server(n)
+    print('Connected')
 
     # Initializes py game window
     pygame.init()
