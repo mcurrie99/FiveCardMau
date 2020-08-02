@@ -1,7 +1,7 @@
 import socket
 from _thread import *
 # from game import *
-from Spoons import *
+from Spoons import Spoons
 import pickle
 import sys
 import struct
