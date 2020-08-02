@@ -52,15 +52,74 @@ def threaded_client(conn, p):
         if connection == True:
             try:
                 game_join = conn.recv(2048).decode()
+                # print(game_join)
                 if game_join == 'None':
                     continue
                 elif game_join == 'Spoons':
-                    spoons_server(name, p)
+                    # spoons_server(name, p)
+                    game.add_player(name, p)
+                    print(name, 'Was added to a Spoons game')
+                    packet = pickle.dumps(game)
+                    length = struct.pack('!I', len(packet))
+                    packet = length + packet
+                    conn.sendall(packet)
+                    reply = ''
+                    while True:
+                        try:
+                            data = conn.recv(4096).decode()
+                            if data == 'get_game':
+                                packet = pickle.dumps(game)
+                                length = struct.pack('!I', len(packet))
+                                packet = length + packet
+                                conn.sendall(packet)
+                            elif data == 'voted':
+                                game.vote(name)
+                                packet = pickle.dumps(game)
+                                length = struct.pack('!I', len(packet))
+                                packet = length + packet
+                                conn.sendall(packet)
+                            elif data == 'change_hand':
+                                conn.send(str.encode('receive 1'))
+                                new_wait = conn.recv(2048).decode()
+                                conn.send(str.encode('receive 2'))
+                                new_hand = conn.recv(2048).decode()
+                                game.change_hand(name, new_wait, new_hand)
+                                packet = pickle.dumps(game)
+                                length = struct.pack('!I', len(packet))
+                                packet = length + packet
+                                conn.sendall(packet)
+                            elif data == 'Winner':
+                                print('Winner')
+                                game.change_winner(name)
+                                packet = pickle.dumps(game)
+                                length = struct.pack('!I', len(packet))
+                                packet = length + packet
+                                conn.sendall(packet)
+                            elif not data:
+                                break
+
+                        #     if gameId in games:
+                        #         game = games[gameId]
+                        #         if not data:
+                        #             break
+                        #         else:
+                        #             if data == 'reset':
+                        #                 game.resetWent()
+                        #             elif data != 'get':
+                        #                 game.play(p, data)
+                        #             reply = game
+                        #             conn.sendall(pickle.dumps(reply))
+                        #     else:
+                        #         break
+                        except:
+                            break
+                    
+                    game.remove_player(name)
+                    game.empty_lobby()
                 elif not game_join:
                     break
                 # else:
                 #     break
-                print(game_join)
             except:
                 connection = False
                 break
@@ -84,65 +143,66 @@ def threaded_client(conn, p):
     print(players)
 
 
-def spoons_server(name, p):
-    game.add_player(name, p)
-    packet = pickle.dumps(game)
-    length = struct.pack('!I', len(packet))
-    packet = length + packet
-    conn.sendall(packet)
-    reply = ''
-    while True:
-        try:
-            data = conn.recv(4096).decode()
-            if data == 'get_game':
-                packet = pickle.dumps(game)
-                length = struct.pack('!I', len(packet))
-                packet = length + packet
-                conn.sendall(packet)
-            elif data == 'voted':
-                game.vote(name)
-                packet = pickle.dumps(game)
-                length = struct.pack('!I', len(packet))
-                packet = length + packet
-                conn.sendall(packet)
-            elif data == 'change_hand':
-                conn.send(str.encode('receive 1'))
-                new_wait = conn.recv(2048).decode()
-                conn.send(str.encode('receive 2'))
-                new_hand = conn.recv(2048).decode()
-                game.change_hand(name, new_wait, new_hand)
-                packet = pickle.dumps(game)
-                length = struct.pack('!I', len(packet))
-                packet = length + packet
-                conn.sendall(packet)
-            elif data == 'Winner':
-                print('Winner')
-                game.change_winner(name)
-                packet = pickle.dumps(game)
-                length = struct.pack('!I', len(packet))
-                packet = length + packet
-                conn.sendall(packet)
-            elif not data:
-                break
+# def spoons_server(name, p):
+    # game.add_player(name, p)
+    # print(name, 'Was added to a Spoons game')
+    # packet = pickle.dumps(game)
+    # length = struct.pack('!I', len(packet))
+    # packet = length + packet
+    # conn.sendall(packet)
+    # reply = ''
+    # while True:
+    #     try:
+    #         data = conn.recv(4096).decode()
+    #         if data == 'get_game':
+    #             packet = pickle.dumps(game)
+    #             length = struct.pack('!I', len(packet))
+    #             packet = length + packet
+    #             conn.sendall(packet)
+    #         elif data == 'voted':
+    #             game.vote(name)
+    #             packet = pickle.dumps(game)
+    #             length = struct.pack('!I', len(packet))
+    #             packet = length + packet
+    #             conn.sendall(packet)
+    #         elif data == 'change_hand':
+    #             conn.send(str.encode('receive 1'))
+    #             new_wait = conn.recv(2048).decode()
+    #             conn.send(str.encode('receive 2'))
+    #             new_hand = conn.recv(2048).decode()
+    #             game.change_hand(name, new_wait, new_hand)
+    #             packet = pickle.dumps(game)
+    #             length = struct.pack('!I', len(packet))
+    #             packet = length + packet
+    #             conn.sendall(packet)
+    #         elif data == 'Winner':
+    #             print('Winner')
+    #             game.change_winner(name)
+    #             packet = pickle.dumps(game)
+    #             length = struct.pack('!I', len(packet))
+    #             packet = length + packet
+    #             conn.sendall(packet)
+    #         elif not data:
+    #             break
 
-        #     if gameId in games:
-        #         game = games[gameId]
-        #         if not data:
-        #             break
-        #         else:
-        #             if data == 'reset':
-        #                 game.resetWent()
-        #             elif data != 'get':
-        #                 game.play(p, data)
-        #             reply = game
-        #             conn.sendall(pickle.dumps(reply))
-        #     else:
-        #         break
-        except:
-            break
+    #     #     if gameId in games:
+    #     #         game = games[gameId]
+    #     #         if not data:
+    #     #             break
+    #     #         else:
+    #     #             if data == 'reset':
+    #     #                 game.resetWent()
+    #     #             elif data != 'get':
+    #     #                 game.play(p, data)
+    #     #             reply = game
+    #     #             conn.sendall(pickle.dumps(reply))
+    #     #     else:
+    #     #         break
+    #     except:
+    #         break
     
-    game.remove_player(name)
-    game.empty_lobby()
+    # game.remove_player(name)
+    # game.empty_lobby()
 
 
 while True:
