@@ -167,8 +167,8 @@ class Spoon:
             if clicked == True:
                 self.server = self.network.send('Spoons')
                 self.lobby()
-            if clicked == False:
-                self.network.send_only('None')
+            # if clicked == False:
+            #     self.network.send_only('None')
 
             pygame.display.update()
 
