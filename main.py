@@ -8,6 +8,7 @@ from Network import Network
 import os
 from Spoons import Spoon
 from Buttons import *
+from game import Spoons
 
 # Initial variable for holding cards
 button = False

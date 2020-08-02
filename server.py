@@ -53,9 +53,7 @@ def threaded_client(conn, p):
             try:
                 game_join = conn.recv(2048).decode()
                 # print(game_join)
-                if game_join == 'None':
-                    continue
-                elif game_join == 'Spoons':
+                if game_join == 'Spoons':
                     # spoons_server(name, p)
                     game.add_player(name, p)
                     print(name, 'Was added to a Spoons game')
