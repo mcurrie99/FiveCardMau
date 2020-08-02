@@ -1,9 +1,16 @@
   
 
 class Spoons:
+    '''
+    Server side of the game
+    '''
+
+
+    import json
+    import random
+
     def __init__(self, id):
-        import json
-        import random
+        
         with open('Cards.json') as json_file:
             self.cards = json.load(json_file)
         self.players = {}
@@ -169,22 +176,24 @@ class Spoons:
         if self.order.index(name) == 0:
             self.rotate_cards()
 
-class Spoon:    
+class Spoon:  
     '''
     Spoons game that will be supported
     Hopefully the first of modular parts of the game
     screen, network, name, WIDTH, HEIGHT
     '''
+
+    import pygame
+    import sys
+    import random
+    import json
+    import random
+    import time
+    from pygame import mixer
+    from Network import Network
+    from Buttons import *
+
     def __init__(self, screen, network, name, WIDTH, HEIGHT):
-        import pygame
-        import sys
-        import random
-        import json
-        import random
-        import time
-        from pygame import mixer
-        from Network import Network
-        from Buttons import *
         self.screen = screen
         self.network = network
         self.name = name
