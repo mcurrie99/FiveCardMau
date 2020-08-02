@@ -41,7 +41,7 @@ class Button:
         text = font.render(self.text, 1, (255, 255, 255))
         text_height = int(text.get_height())
         text_width = int(text.get_width())
-        screen.blit(text, (self.x + round(self.width/2) - round(text_width/2), self.y + round(self.height/2) - round(text_height/2)))
+        self.screen.blit(text, (self.x + round(self.width/2) - round(text_width/2), self.y + round(self.height/2) - round(text_height/2)))
 
     def click(self):
         pressed = pygame.mouse.get_pressed()[0]

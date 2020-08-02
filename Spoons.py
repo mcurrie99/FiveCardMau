@@ -11,7 +11,7 @@ from Buttons import *
 
 class Spoons:
     '''
-    Server side of the game
+    Server side of Spoons
     '''
     def __init__(self, id):
         with open('Cards.json') as json_file:
@@ -193,6 +193,52 @@ class Spoon:
         self.HEIGHT = HEIGHT
         self.game_over = False
 
+    def lobby(self):
+        global close_game
+        gamer = False
+        close_game = True
+        voted = False
+        lob = pygame.image.load('background.png')
+        # game_over = True
+        # network.change_hand('this', 'works')
+        while gamer == False:
+            self.server = self.network.get_game()
+            player_y = 0
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        sys.exit()
+            self.screen.fill((0,0,0))
+            self.screen.blit(lob, (0,0))
+
+            LOBBY = Button(self.screen, 'Lobby', 'arial', 35, 0, 0, (255,255,255), False, False)
+            for i, j in enumerate(self.server.players):
+                PLAYER = Button(self.screen, j, 'arial', 40, 1500, player_y, (255,255,255), False, False)
+                player_y += PLAYER.render_height + 50
+
+            if voted == False:
+                VOTE = Button(self.screen, 'Vote to Start Game', 'arial', 35, 50, 880, (0,255,0), False, False)
+                clicked = VOTE.hover()
+                if clicked == True:
+                    self.network.send('voted')
+                    voted = True
+            elif voted == True:
+                VOTE = Button(self.screen, 'You Have Voted', 'arial', 35, 50, 880, (255,0,0), False, False)
+            
+            TOTAL_VOTES = Button(self.screen, f'Total Votes: {self.server.voters}', 'arial', 35, 50, 980, (255,0,0), False, False)
+
+            if self.server.winner_name != '':
+                WINNER_NAME = Button(self.screen, f'{self.server.winner_name} won the last game', 'arial', 50, self.WIDTH/2, 200, (0,255,0), False, True)
+
+            pygame.display.update()
+
+            if self.server.started == True:
+                self.game()
+                voted = False
+
     def game(self):
         voted = False
 
@@ -265,82 +311,7 @@ class Spoon:
 
             pygame.display.update()
 
-    def lobby(self):
-        global close_game
-        gamer = False
-        close_game = True
-        voted = False
-        lob = pygame.image.load('background.png')
-        # game_over = True
-        # network.change_hand('this', 'works')
-        while gamer == False:
-            self.server = self.network.get_game()
-            player_y = 0
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        sys.exit()
-            self.screen.fill((0,0,0))
-            self.screen.blit(lob, (0,0))
-
-            LOBBY = Button(self.screen, 'Lobby', 'arial', 35, 0, 0, (255,255,255), False, False)
-            for i, j in enumerate(self.server.players):
-                PLAYER = Button(self.screen, j, 'arial', 40, 1500, player_y, (255,255,255), False, False)
-                player_y += PLAYER.render_height + 50
-
-            if voted == False:
-                VOTE = Button(self.screen, 'Vote to Start Game', 'arial', 35, 50, 880, (0,255,0), False, False)
-                clicked = VOTE.hover()
-                if clicked == True:
-                    self.network.send('voted')
-                    voted = True
-            elif voted == True:
-                VOTE = Button(self.screen, 'You Have Voted', 'arial', 35, 50, 880, (255,0,0), False, False)
-            
-            TOTAL_VOTES = Button(self.screen, f'Total Votes: {self.server.voters}', 'arial', 35, 50, 980, (255,0,0), False, False)
-
-            if self.server.winner_name != '':
-                WINNER_NAME = Button(self.screen, f'{self.server.winner_name} won the last game', 'arial', 50, self.WIDTH/2, 200, (0,255,0), False, True)
-
-            pygame.display.update()
-
-            if self.server.started == True:
-                self.game()
-                voted = False
-
-    def main_menu(self):
-        join = False
-
-        lob = pygame.image.load('lobby.png')
-
-        while join == False:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        sys.exit()
-
-            self.screen.fill((0,0,0))
-            self.screen.blit(lob, (0,0))
-
-
-            MAIN = Button(self.screen, 'Main Menu', 'arial', 35, self.WIDTH/2, 400, (255,255,255), False, True)
-            WELCOME = Button(self.screen, f'Welcome {self.name}', 'arial', 35, 0, 0, (255,255,255), False, False)
-            JOIN = Button(self.screen, 'Join', 'arial', 80, self.WIDTH/2, self.HEIGHT/2, (255,255,255), False, True)
-            clicked = JOIN.hover()
-
-            if clicked == True:
-                self.server = self.network.send('Spoons')
-                self.lobby()
-            # if clicked == False:
-            #     self.network.send_only('None')
-
-            pygame.display.update()
+    
 
 
     # Decides if person is elgible to win

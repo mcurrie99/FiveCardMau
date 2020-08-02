@@ -2,17 +2,16 @@ import pygame
 import sys
 import random
 import json
-import time
 from pygame import mixer
 from Network import Network
-import os
 from Spoons import *
 from Buttons import *
+from Blackjack import *
 # from game import Spoons
 
 
 # Make sure you update this when you add a new game
-Game_Modes = []
+Game_Modes = ['Spoons', 'Blackjack']
 
 #Screen Dimensions
 WIDTH =  1920 #2560/2
@@ -29,7 +28,7 @@ def main():
     n = Network()
             
     connect_server(n)
-    print('Connected')
+    print('Connected to server')
 
     # Initializes py game window
     pygame.init()
@@ -42,8 +41,7 @@ def main():
     # mixer.music.load('music.mp3')
     # mixer.music.play(-1)
     
-    test = Spoon(screen, n, name, WIDTH, HEIGHT)
-    test.main_menu()
+    main_menu(screen, name, n)
 
 def connect_server(network):
     # Initializes connection with server
@@ -59,8 +57,44 @@ def connect_server(network):
             break
         else:
             print('Name is already taken')
-    # lobby(screen, player, network, name, server)
         
+
+def main_menu(screen, name, network):
+        join = False
+
+        lob = pygame.image.load('lobby.png')
+
+        while join == False:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        sys.exit()
+
+            screen.fill((0,0,0))
+            screen.blit(lob, (0,0))
+
+
+            MAIN = Button(screen, 'Main Menu', 'arial', 35, WIDTH/2, 400, (255,255,255), False, True)
+            WELCOME = Button(screen, f'Welcome {name}', 'arial', 35, 0, 0, (255,255,255), False, False)
+            button_place = HEIGHT/2
+            for i in Game_Modes:
+                JOIN = Button(screen, f'Join {i}', 'arial', 80, WIDTH/2, button_place, (255,255,255), False, True)
+                clicked = JOIN.hover()
+                if clicked == True:
+                    if i == 'Spoons':
+                        spoons = Spoon(screen, network, name, WIDTH, HEIGHT)
+                        server = network.send(i)
+                        spoons.lobby()
+                    elif i == 'Blackjack':
+                        blackjack = Blackjack(screen, network, name, WIDTH, HEIGHT)
+                button_place += JOIN.render_height + 50
+            # if clicked == False:
+            #     self.network.send_only('None')
+
+            pygame.display.update()
 
     
 if __name__ == '__main__':

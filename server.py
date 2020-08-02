@@ -1,17 +1,18 @@
 import socket
 from _thread import *
-# from game import *
-from Spoons import Spoons
 import pickle
 import sys
 import struct
+from Spoons import *
+from Blackjack import *
 
 server = ''
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-game = Spoons(0)
+spoons = Spoons(0)
+blackjack = Blackjacks(0)
 
 
 try:
@@ -55,66 +56,9 @@ def threaded_client(conn, p):
                 game_join = conn.recv(2048).decode()
                 # print(game_join)
                 if game_join == 'Spoons':
-                    # spoons_server(name, p)
-                    game.add_player(name, p)
-                    print(name, 'Was added to a Spoons game')
-                    packet = pickle.dumps(game)
-                    length = struct.pack('!I', len(packet))
-                    packet = length + packet
-                    conn.sendall(packet)
-                    reply = ''
-                    while True:
-                        try:
-                            data = conn.recv(4096).decode()
-                            if data == 'get_game':
-                                packet = pickle.dumps(game)
-                                length = struct.pack('!I', len(packet))
-                                packet = length + packet
-                                conn.sendall(packet)
-                            elif data == 'voted':
-                                game.vote(name)
-                                packet = pickle.dumps(game)
-                                length = struct.pack('!I', len(packet))
-                                packet = length + packet
-                                conn.sendall(packet)
-                            elif data == 'change_hand':
-                                conn.send(str.encode('receive 1'))
-                                new_wait = conn.recv(2048).decode()
-                                conn.send(str.encode('receive 2'))
-                                new_hand = conn.recv(2048).decode()
-                                game.change_hand(name, new_wait, new_hand)
-                                packet = pickle.dumps(game)
-                                length = struct.pack('!I', len(packet))
-                                packet = length + packet
-                                conn.sendall(packet)
-                            elif data == 'Winner':
-                                print('Winner')
-                                game.change_winner(name)
-                                packet = pickle.dumps(game)
-                                length = struct.pack('!I', len(packet))
-                                packet = length + packet
-                                conn.sendall(packet)
-                            elif not data:
-                                break
-
-                        #     if gameId in games:
-                        #         game = games[gameId]
-                        #         if not data:
-                        #             break
-                        #         else:
-                        #             if data == 'reset':
-                        #                 game.resetWent()
-                        #             elif data != 'get':
-                        #                 game.play(p, data)
-                        #             reply = game
-                        #             conn.sendall(pickle.dumps(reply))
-                        #     else:
-                        #         break
-                        except:
-                            break
-                    
-                    game.remove_player(name)
-                    game.empty_lobby()
+                    spoons_server(name, p)
+                elif game_join == 'Blackjack':
+                    blackjack_server(name, p)
                 elif not game_join:
                     break
                 # else:
@@ -125,84 +69,109 @@ def threaded_client(conn, p):
         else:
             break
 
-
-    
-
-    # try:
-    #     del games[gameId]
-    #     print('Closing Game: ', gameId)
-    # except:
-    #     pass
     idCount -= 1
     conn.close()
     players.remove(name)
             
     print(f'{name} Lost Connection')
-    print(game.players)
     print(players)
 
 
-# def spoons_server(name, p):
-    # game.add_player(name, p)
-    # print(name, 'Was added to a Spoons game')
-    # packet = pickle.dumps(game)
-    # length = struct.pack('!I', len(packet))
-    # packet = length + packet
-    # conn.sendall(packet)
-    # reply = ''
-    # while True:
-    #     try:
-    #         data = conn.recv(4096).decode()
-    #         if data == 'get_game':
-    #             packet = pickle.dumps(game)
-    #             length = struct.pack('!I', len(packet))
-    #             packet = length + packet
-    #             conn.sendall(packet)
-    #         elif data == 'voted':
-    #             game.vote(name)
-    #             packet = pickle.dumps(game)
-    #             length = struct.pack('!I', len(packet))
-    #             packet = length + packet
-    #             conn.sendall(packet)
-    #         elif data == 'change_hand':
-    #             conn.send(str.encode('receive 1'))
-    #             new_wait = conn.recv(2048).decode()
-    #             conn.send(str.encode('receive 2'))
-    #             new_hand = conn.recv(2048).decode()
-    #             game.change_hand(name, new_wait, new_hand)
-    #             packet = pickle.dumps(game)
-    #             length = struct.pack('!I', len(packet))
-    #             packet = length + packet
-    #             conn.sendall(packet)
-    #         elif data == 'Winner':
-    #             print('Winner')
-    #             game.change_winner(name)
-    #             packet = pickle.dumps(game)
-    #             length = struct.pack('!I', len(packet))
-    #             packet = length + packet
-    #             conn.sendall(packet)
-    #         elif not data:
-    #             break
-
-    #     #     if gameId in games:
-    #     #         game = games[gameId]
-    #     #         if not data:
-    #     #             break
-    #     #         else:
-    #     #             if data == 'reset':
-    #     #                 game.resetWent()
-    #     #             elif data != 'get':
-    #     #                 game.play(p, data)
-    #     #             reply = game
-    #     #             conn.sendall(pickle.dumps(reply))
-    #     #     else:
-    #     #         break
-    #     except:
-    #         break
+def spoons_server(name, p):
+    spoons.add_player(name, p)
+    print(name, 'Was added to a Spoons game')
+    packet = pickle.dumps(spoons)
+    length = struct.pack('!I', len(packet))
+    packet = length + packet
+    conn.sendall(packet)
+    reply = ''
+    while True:
+        try:
+            data = conn.recv(4096).decode()
+            if data == 'get_game':
+                packet = pickle.dumps(spoons)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif data == 'voted':
+                spoons.vote(name)
+                packet = pickle.dumps(spoons)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif data == 'change_hand':
+                conn.send(str.encode('receive 1'))
+                new_wait = conn.recv(2048).decode()
+                conn.send(str.encode('receive 2'))
+                new_hand = conn.recv(2048).decode()
+                spoons.change_hand(name, new_wait, new_hand)
+                packet = pickle.dumps(spoons)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif data == 'Winner':
+                print('Winner')
+                spoons.change_winner(name)
+                packet = pickle.dumps(spoons)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif not data:
+                break
+        except:
+            break
     
-    # game.remove_player(name)
-    # game.empty_lobby()
+    spoons.remove_player(name)
+    print(spoons.players)
+    spoons.empty_lobby()
 
+def blackjack_server(name, p):
+    blackjack.add_player(name, p)
+    print(name, 'Was added to a Spoons game')
+    packet = pickle.dumps(blackjack)
+    length = struct.pack('!I', len(packet))
+    packet = length + packet
+    conn.sendall(packet)
+    reply = ''
+    while True:
+        try:
+            data = conn.recv(4096).decode()
+            if data == 'get_game':
+                packet = pickle.dumps(blackjack)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif data == 'voted':
+                blackjack.vote(name)
+                packet = pickle.dumps(blackjack)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif data == 'change_hand':
+                conn.send(str.encode('receive 1'))
+                new_wait = conn.recv(2048).decode()
+                conn.send(str.encode('receive 2'))
+                new_hand = conn.recv(2048).decode()
+                blackjack.change_hand(name, new_wait, new_hand)
+                packet = pickle.dumps(blackjack)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif data == 'Winner':
+                print('Winner')
+                blackjack.change_winner(name)
+                packet = pickle.dumps(blackjack)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif not data:
+                break
+        except:
+            break
+    
+    blackjack.remove_player(name)
+    print(blackjack.players)
+    blackjack.empty_lobby()
 
 while True:
     conn, addr = s.accept()
