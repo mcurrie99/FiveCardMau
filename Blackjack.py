@@ -17,6 +17,7 @@ class Blackjacks:
         with open('Cards.json') as json_file:
             self.cards = json.load(json_file)
         self.players = {}
+        self.points = {}
         self.hand = {}
         self.started = False
         self.votes = {}
@@ -46,6 +47,7 @@ class Blackjacks:
 
     def add_player(self, Name, playerid):
         self.players.update({Name:[playerid, False]})
+        self.points.update({Name:[0, 0]})
         self.hand.update({Name:[]})
         self.votes.update({Name: [False]})
         self.order.append(Name)
@@ -63,6 +65,7 @@ class Blackjacks:
             if self.players[Name][1] == True:
                 new_host = True
             del self.players[Name]
+            del self.points[Name]
             if self.votes[Name][0] == True:
                 self.voters -=  1
             del self.votes[Name]
@@ -152,6 +155,36 @@ class Blackjacks:
     def empty_lobby(self):
         if len(self.players) == 0 and self.started == True:
             self.end_game()
+
+    def check_points(self):
+        for i, j in enumerate(self.points):
+            number = False
+            count_low = 0
+            count_high = 0
+            Ace = False
+            check = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+            for k in self.hand[j]:
+                count_add = k.split('_')
+                for l in check:
+                    if count_add[0] == l:
+                        add = int(count_add[0])
+                        count_low += add
+                        count_high += add
+                        break
+                if count_add[0] == 'king' or count_add[0] == 'queen' or count_add[0] == 'jack':
+                    count_low += 10
+                    count_high += 10
+                elif count_add == 'ace':
+                    if Ace == False:
+                        count_low += 1
+                        count_high += 11
+                        Ace = True
+                    elif Ace == True:
+                        count_low += 1
+                        count_high += 1
+            self.points[j][0] = count_low
+            self.point[j][1] = count_high
+        
 
 
 class Blackjack:
@@ -266,27 +299,19 @@ class Blackjack:
             except:
                 WAITING = False
 
-            PASS = Button(self.screen, 'Pass', 'arial', 90, 150, 150, (255,255,255), False, False)
+            HIT = Button(self.screen, 'Hit', 'arial', 90, 150, 150, (255,255,255), False, False)
+            STAND = Button(self.screen, 'Stand', 'arial', 90, (HIT.render_width + 50), 150, (255, 255, 255), False, False)
 
-            # Draws square under the card the player is hovering over and sends data to server
-            if CARD1.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand(self.server.hand[self.name]['Hand'][0], self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-            if CARD2.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand(self.server.hand[self.name]['Hand'][1], self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-            if CARD3.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand(self.server.hand[self.name]['Hand'][2], self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-            if CARD4.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand(self.server.hand[self.name]['Hand'][3], self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-            if PASS.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand('Pass', self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
+            # Shows the calculated amount of points that you have at the moment
+            POINTS = Button(self.screen, f'Points: {points}', 'arial', 90, 105, (CARD1.render_height - 50), (255, 255, 255), False, False)
 
-            # Might use not sure yet
-            # WAITING.hover()
+            # Draws the Hit or Stand Buttons to Hit
+            if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
+                self.network.send('Hit')
+                WAIT = 0
+            if STAND.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
+                self.network.send('Stand')
+                WAIT = 0
             
 
             player_y = 100
@@ -301,7 +326,6 @@ class Blackjack:
 
             pygame.display.update()
 
-    
 
 
     # Decides if person is elgible to win

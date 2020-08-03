@@ -135,9 +135,10 @@
 
 # print(socket.gethostname())
 
-hand = ['matt', 'patt']
-for i in hand:
-    print(i)
+# hand = ['matt', 'patt']
+# print(hand.index('patt'))
+# for i in hand:
+#     print(i)
 # hand = f.read()
 # print(hand)
 # hand = bytes(hand, 'utf-8')
@@ -145,4 +146,34 @@ for i in hand:
 # hand = pickle.loads(hand)
 # print(hand)
 
-    
+
+
+count_low = 0
+count_high = 0
+Ace = False
+hello = input()
+count_add = hello.split('_')
+print(count_add)
+check = ['1','2','3','4','5','6','7','8','9','10']
+
+for j in check:
+    if count_add[0] == j:
+        bruh = int(count_add[0])
+        count_low += bruh
+        count_high += bruh
+        break
+if count_add[0] == 'king' or count_add[0] == 'queen' or count_add[0] == 'jack':
+    count_low += 10
+    count_high += 10
+elif count_add[0] == 'ace':
+    if Ace == False:
+        count_low += 1
+        count_high += 11
+        Ace = True
+    elif Ace == True:
+        count_low += 1
+        count_high += 1
+
+print(count_low)
+print(count_high)
+print(Ace)

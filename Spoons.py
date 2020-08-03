@@ -295,8 +295,6 @@ class Spoon:
                 self.network.change_hand('Pass', self.server.hand[self.name]['Waiting'][0])
                 WAIT = 0
 
-            # Might use not sure yet
-            # WAITING.hover()
             
 
             player_y = 100

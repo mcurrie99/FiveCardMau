@@ -11,7 +11,7 @@ from Blackjack import *
 
 
 # Make sure you update this when you add a new game
-Game_Modes = ['Spoons', 'Blackjack']
+Game_Modes = ['Spoons', 'Blackjack (Will crash your game)']
 
 #Screen Dimensions
 WIDTH =  1920 #2560/2
