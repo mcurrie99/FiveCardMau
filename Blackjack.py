@@ -35,7 +35,6 @@ class Blackjacks:
         for i, j in enumerate(self.hand):
             for k in range(0,2):
                 r = random.randint(0, len(self.cards['Cards']) - 1)
-                print(r)
                 self.hand[j].append(self.cards['Cards'][r])
                 self.cards['Cards'].pop(r)
         print(self.hand)
@@ -43,7 +42,9 @@ class Blackjacks:
 
     def deal(self, Name):
         r = random.randint(0, len(self.cards['Cards']) - 1)
+        print(r)
         self.hand[Name].append(self.cards['Cards'][r])
+        print(self.cards['Cards'][r])
         self.cards['Cards'].pop(r)
         self.check_points()
 
@@ -178,6 +179,7 @@ class Blackjacks:
                         count_low += add
                         count_high += add
                         break
+                
                 if count_add[0] == 'king' or count_add[0] == 'queen' or count_add[0] == 'jack':
                     count_low += 10
                     count_high += 10
@@ -189,27 +191,27 @@ class Blackjacks:
                     elif Ace == True:
                         count_low += 1
                         count_high += 1
-            difference1 = 21 - count_low
-            difference2 = 21 - count_high
+            diff1 = 21 - count_low
+            diff2 = 21 - count_high
 
-            if difference1 <= difference2 and difference1 >= 0:
+            if diff1 <= diff2 and diff1 >= 0:
                 self.points[j][0] = count_low
-            elif difference2 <= difference1 and difference2 >= 0:
+            elif diff2 <= diff1 and diff2 >= 0:
                 self.points[j][0] = count_high
-            elif difference1 < 0 and difference2 < 0:
+            elif diff1 < 0 and diff2 < 0:
                 self.points[j][0] = 'Over 21'
-            elif differnece1 < 0 and difference2 >= 0:
+            elif diff1 < 0 and diff2 >= 0:
                 self.points[j][0] = count_high
-            elif difference2 < 0 and difference1 >= 0:
+            elif diff2 < 0 and diff1 >= 0:
                 self.points[j][0] = count_low
             else:
                 print('Stats')
-                print(difference1)
-                print(difference2)
+                print(diff1)
+                print(diff2)
                 print(count_low)
                 print(count_high)
                 print()
-                print()                
+                print()
                 print()
                 print()
 
