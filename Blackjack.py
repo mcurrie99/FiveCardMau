@@ -26,12 +26,14 @@ class Blackjacks:
         self.winner = False
         self.winner_name = ''
         self.hand.update({'Dealer':[]})
+        self.points.update({'Dealer':[0]})
         self.turn = 0
+        self.round = 1
 
 
     def init_deal(self):
         for i, j in enumerate(self.hand):
-            for k in range(0,4):
+            for k in range(0,2):
                 r = random.randint(0, len(self.cards['Cards']) - 1)
                 print(r)
                 self.hand[j].append(self.cards['Cards'][r])
@@ -40,14 +42,18 @@ class Blackjacks:
         print('Dealt Cards')
 
     def deal(self, Name):
-            r = random.randint(0, len(self.cards['Cards']) - 1)
-            self.hand[Name].append(self.cards['Cards'][r])
-            self.cards['Cards'].pop(r)
+        r = random.randint(0, len(self.cards['Cards']) - 1)
+        self.hand[Name].append(self.cards['Cards'][r])
+        self.cards['Cards'].pop(r)
+        self.check_points()
 
+    def stand(self,Name):
+        self.check_points()
+        pass
 
     def add_player(self, Name, playerid):
         self.players.update({Name:[playerid, False]})
-        self.points.update({Name:[0, 0]})
+        self.points.update({Name:[0]})
         self.hand.update({Name:[]})
         self.votes.update({Name: [False]})
         self.order.append(Name)
@@ -122,6 +128,7 @@ class Blackjacks:
         self.started = False
         self.voters = 0
         print('Game Ended')
+        print(len(self.cards['Cards']))
         return self.started
 
     def start_game(self):
@@ -174,7 +181,7 @@ class Blackjacks:
                 if count_add[0] == 'king' or count_add[0] == 'queen' or count_add[0] == 'jack':
                     count_low += 10
                     count_high += 10
-                elif count_add == 'ace':
+                elif count_add[0] == 'ace':
                     if Ace == False:
                         count_low += 1
                         count_high += 11
@@ -182,8 +189,31 @@ class Blackjacks:
                     elif Ace == True:
                         count_low += 1
                         count_high += 1
-            self.points[j][0] = count_low
-            self.point[j][1] = count_high
+            difference1 = 21 - count_low
+            difference2 = 21 - count_high
+
+            if difference1 <= difference2 and difference1 >= 0:
+                self.points[j][0] = count_low
+            elif difference2 <= difference1 and difference2 >= 0:
+                self.points[j][0] = count_high
+            elif difference1 < 0 and difference2 < 0:
+                self.points[j][0] = 'Over 21'
+            elif differnece1 < 0 and difference2 >= 0:
+                self.points[j][0] = count_high
+            elif difference2 < 0 and difference1 >= 0:
+                self.points[j][0] = count_low
+            else:
+                print('Stats')
+                print(difference1)
+                print(difference2)
+                print(count_low)
+                print(count_high)
+                print()
+                print()                
+                print()
+                print()
+
+                self.points[j][0] = 'Error'
         
 
 
@@ -289,7 +319,7 @@ class Blackjack:
                 except:
                     pass
                 try:
-                    CARD5 = Card(self.screen, self.server.hand[self.name][4], 1565, 650)
+                    CARD5 = Card(self.screen, self.server.hand[self.name][4], 1565, 680)
                 except:
                     pass
             except:
@@ -299,11 +329,19 @@ class Blackjack:
             except:
                 WAITING = False
 
+            # Playable Buttons
             HIT = Button(self.screen, 'Hit', 'arial', 90, 150, 150, (255,255,255), False, False)
-            STAND = Button(self.screen, 'Stand', 'arial', 90, (HIT.render_width + 50), 150, (255, 255, 255), False, False)
+            STAND = Button(self.screen, 'Stand', 'arial', 90, (200 + HIT.render_width), 150, (255, 255, 255), False, False)
 
             # Shows the calculated amount of points that you have at the moment
-            POINTS = Button(self.screen, f'Points: {points}', 'arial', 90, 105, (CARD1.render_height - 50), (255, 255, 255), False, False)
+            POINTS = Button(self.screen, f'Points: {self.server.points[self.name][0]}', 'arial', 90, 105, (680 - (STAND.render_height + 50)), (255, 255, 255), False, False)
+
+            # Tells you if it is your turn
+            if self.server.turn == self.server.order.index(self.name):
+                TURN = Button(self.screen, 'It is your turn', 'arial', 90, self.WIDTH/2, 100, (0, 255, 0), False, True)
+            else:
+                current_turn = self.server.order[self.server.turn]
+                TURN = Button(self.screen, f'It is {current_turn}\'s turn', 'arial', 90, self.WIDTH/2, 100, (255, 0, 0), False, True)
 
             # Draws the Hit or Stand Buttons to Hit
             if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
@@ -313,13 +351,13 @@ class Blackjack:
                 self.network.send('Stand')
                 WAIT = 0
             
-
+            # Shows players that are in the lobby
             player_y = 100
             for i, j in enumerate(self.server.players):
-                PLAYER = Button(self.screen, j, 'arial', 60, 960, player_y, (255,255,255), False, True)
+                PLAYER = Button(self.screen, j, 'arial', 60, 1500, player_y, (255,255,255), False, False)
                 player_y += PLAYER.render_height + 250
 
-            self.check_winner()
+            # self.check_winner()
 
             if WAIT < 100:
                 WAIT += 5
@@ -330,13 +368,25 @@ class Blackjack:
 
     # Decides if person is elgible to win
     def check_winner(self):
-        Card1 = self.server.hand[self.name]['Hand'][0].split('_')
-        Card2 = self.server.hand[self.name]['Hand'][1].split('_')
-        Card3 = self.server.hand[self.name]['Hand'][2].split('_')
-        Card4 = self.server.hand[self.name]['Hand'][3].split('_')
+        Card1 = self.server.hand[self.name][0].split('_')
+        try:
+            Card2 = self.server.hand[self.name][1].split('_')
+        except:
+            pass
+        try:
+            Card3 = self.server.hand[self.name][2].split('_')
+        except:
+            pass
+        try:
+            Card4 = self.server.hand[self.name][3].split('_')
+        except:
+            pass
+        try:
+            Card5 = self.server.hand[self.name][4].split('_')
+        except:
+            pass
 
         if (Card1[0] == Card2[0]) and (Card1[0] == Card3[0]) and (Card1[0] == Card4[0]):
             WINNER = Button(self.screen, 'Winner', 'arial', 60, self.WIDTH/2, 730, (0,255,0), False, True)
             if WINNER.hover() == True:
                 self.network.send('Winner')
-    

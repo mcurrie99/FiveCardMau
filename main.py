@@ -11,7 +11,7 @@ from Blackjack import *
 
 
 # Make sure you update this when you add a new game
-Game_Modes = ['Spoons', 'Blackjack (Will crash your game)']
+Game_Modes = ['Spoons', 'Blackjack']
 
 #Screen Dimensions
 WIDTH =  1920 #2560/2
@@ -51,12 +51,18 @@ def connect_server(network):
     while True:
         print('Enter your game name here')        
         name = input()
-        player = network.connect(name)
+        if count == 0:
+            player = network.connect(name)
+            count += 1
+        else:
+            player = network.send_name(name)
+
         if player == 'Good':
             launch = True
             break
         else:
             print('Name is already taken')
+        
         
 
 def main_menu(screen, name, network):
@@ -90,6 +96,8 @@ def main_menu(screen, name, network):
                         spoons.lobby()
                     elif i == 'Blackjack':
                         blackjack = Blackjack(screen, network, name, WIDTH, HEIGHT)
+                        server = network.send(i)
+                        blackjack.lobby()
                 button_place += JOIN.render_height + 50
             # if clicked == False:
             #     self.network.send_only('None')

@@ -60,6 +60,13 @@ class Network:
         except socket.error as e:
             print(e)
     
+    def send_name(self, data):
+        try:
+            self.client.send(str.encode(data))
+            return self.client.recv(2048).decode()
+        except socket.error as e:
+            print(e)
+    
     def send_only(self, data):
         try:
             self.client.send(str.encode(data))

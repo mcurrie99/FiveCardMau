@@ -35,15 +35,19 @@ def threaded_client(conn, p):
 
     while True:
         try:
+            valid = True
             name = conn.recv(4096).decode()
-            if len(players) > 0:
+            if name == 'Dealer':
+                valid = False
+            elif len(players) > 0:
                 for i in players:
                     if name == i:
-                        valid == False
+                        valid = False
                         break
             if valid == True:
                 conn.send(str.encode('Good'))
                 players.append(name)
+                print(f'{name} joined')
                 break
             else:
                 conn.send(str.encode('Not'))
@@ -137,6 +141,7 @@ def blackjack_server(name, p):
         try:
             data = conn.recv(4096).decode()
             if data == 'get_game':
+                blackjack.check_points()
                 packet = pickle.dumps(blackjack)
                 length = struct.pack('!I', len(packet))
                 packet = length + packet
@@ -147,12 +152,14 @@ def blackjack_server(name, p):
                 length = struct.pack('!I', len(packet))
                 packet = length + packet
                 conn.sendall(packet)
-            elif data == 'change_hand':
-                conn.send(str.encode('receive 1'))
-                new_wait = conn.recv(2048).decode()
-                conn.send(str.encode('receive 2'))
-                new_hand = conn.recv(2048).decode()
-                blackjack.change_hand(name, new_wait, new_hand)
+            elif data == 'Hit':
+                blackjack.deal(name)
+                packet = pickle.dumps(blackjack)
+                length = struct.pack('!I', len(packet))
+                packet = length + packet
+                conn.sendall(packet)
+            elif data == 'Stand':
+                blackjack.stand(name)
                 packet = pickle.dumps(blackjack)
                 length = struct.pack('!I', len(packet))
                 packet = length + packet
