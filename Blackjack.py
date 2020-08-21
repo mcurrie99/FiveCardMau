@@ -47,10 +47,11 @@ class Blackjacks:
         print(self.cards['Cards'][r])
         self.cards['Cards'].pop(r)
         self.check_points()
+        self.change_turn()
 
     def stand(self,Name):
         self.check_points()
-        pass
+        self.change_turn()
 
     def add_player(self, Name, playerid):
         self.players.update({Name:[playerid, False]})
@@ -163,6 +164,15 @@ class Blackjacks:
     def empty_lobby(self):
         if len(self.players) == 0 and self.started == True:
             self.end_game()
+
+    def change_turn(self):
+        self.player_length = len(self.players) - 2
+        if turn == self.player_length:
+            self.round += 1
+            self.turn = 0
+            print(f'Round Changed to {self.round}')
+        else:
+            turn += 1
 
     def check_points(self):
         for i, j in enumerate(self.points):
@@ -281,6 +291,7 @@ class Blackjack:
 
     def game(self):
         voted = False
+        Stand = False
 
         #Background
         background = pygame.image.load('background.png')
@@ -306,22 +317,48 @@ class Blackjack:
             
             try:
                 # There should always be an initial card
-                CARD1 = Card(self.screen, self.server.hand[self.name][0], 105, 680)
+                CARD1 = Card(self.screen, self.server.hand[self.name][0], .5, 105, 680)
 
                 try:
-                    CARD2 = Card(self.screen, self.server.hand[self.name][1], 470, 680)
+                    CARD2 = Card(self.screen, self.server.hand[self.name][1], .5, 470, 680)
                 except:
                     pass
                 try:
-                    CARD3 = Card(self.screen, self.server.hand[self.name][2], 835, 680)
+                    CARD3 = Card(self.screen, self.server.hand[self.name][2], .5, 835, 680)
                 except:
                     pass
                 try:
-                    CARD4 = Card(self.screen, self.server.hand[self.name][3], 1200, 680)
+                    CARD4 = Card(self.screen, self.server.hand[self.name][3], .5, 1200, 680)
                 except:
                     pass
                 try:
-                    CARD5 = Card(self.screen, self.server.hand[self.name][4], 1565, 680)
+                    CARD5 = Card(self.screen, self.server.hand[self.name][4], .5, 1565, 680)
+                except:
+                    pass
+            except:
+                print('Error at printing cards')
+
+
+            # Shows the dealer first card and second card
+            try:
+                # There should always be an initial card
+                # Should start at 617.5
+                CARD1_DEALER = Card(self.screen, self.server.hand['Dealer'][0], .25, 617, 170)
+
+                try:
+                    CARD2_DEALER = Card(self.screen, self.server.hand['Dealer'][1], .25, 757, 170)
+                except:
+                    pass
+                try:
+                    CARD3_DEALER = Card(self.screen, self.server.hand['Dealer'][2], .25, 897, 170)
+                except:
+                    pass
+                try:
+                    CARD4_DEALER = Card(self.screen, self.server.hand['Dealer'][3], .25,  1037, 170)
+                except:
+                    pass
+                try:
+                    CARD5_DEALER = Card(self.screen, self.server.hand['Dealer'][4], .25, 1177, 170)
                 except:
                     pass
             except:
@@ -332,11 +369,22 @@ class Blackjack:
                 WAITING = False
 
             # Playable Buttons
-            HIT = Button(self.screen, 'Hit', 'arial', 90, 150, 150, (255,255,255), False, False)
+            if Stand == False:
+                HIT = Button(self.screen, 'Hit', 'arial', 90, 150, 150, (255,255,255), False, False)
             STAND = Button(self.screen, 'Stand', 'arial', 90, (200 + HIT.render_width), 150, (255, 255, 255), False, False)
 
             # Shows the calculated amount of points that you have at the moment
             POINTS = Button(self.screen, f'Points: {self.server.points[self.name][0]}', 'arial', 90, 105, (680 - (STAND.render_height + 50)), (255, 255, 255), False, False)
+            if self.server.points[self.name][0] == 21 or self.server.points[self.name][0] == 'Over 21':
+                Stand = True
+
+            # Draws the Hit or Stand Buttons to Hit
+            if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100 and Stand == False:
+                self.network.send('Hit')
+                WAIT = 0
+            if STAND.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100 or Stand == True:
+                self.network.send('Stand')
+                WAIT = 0
 
             # Tells you if it is your turn
             if self.server.turn == self.server.order.index(self.name):
@@ -345,13 +393,6 @@ class Blackjack:
                 current_turn = self.server.order[self.server.turn]
                 TURN = Button(self.screen, f'It is {current_turn}\'s turn', 'arial', 90, self.WIDTH/2, 100, (255, 0, 0), False, True)
 
-            # Draws the Hit or Stand Buttons to Hit
-            if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
-                self.network.send('Hit')
-                WAIT = 0
-            if STAND.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
-                self.network.send('Stand')
-                WAIT = 0
             
             # Shows players that are in the lobby
             player_y = 100

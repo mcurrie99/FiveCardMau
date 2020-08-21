@@ -265,10 +265,10 @@ class Spoon:
             # Creates and draws cards that the player holds
             
             try:
-                CARD1 = Card(self.screen, self.server.hand[self.name]['Hand'][0], 100, 680)
-                CARD2 = Card(self.screen, self.server.hand[self.name]['Hand'][1], 590, 680)
-                CARD3 = Card(self.screen, self.server.hand[self.name]['Hand'][2], 1080, 680)
-                CARD4 = Card(self.screen, self.server.hand[self.name]['Hand'][3], 1570, 680)
+                CARD1 = Card(self.screen, self.server.hand[self.name]['Hand'][0], .5, 100, 680)
+                CARD2 = Card(self.screen, self.server.hand[self.name]['Hand'][1], .5, 590, 680)
+                CARD3 = Card(self.screen, self.server.hand[self.name]['Hand'][2], .5, 1080, 680)
+                CARD4 = Card(self.screen, self.server.hand[self.name]['Hand'][3], .5, 1570, 680)
             except:
                 print('Error at printing cards')
             try:

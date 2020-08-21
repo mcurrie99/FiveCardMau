@@ -6,8 +6,12 @@ from game import *
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Public IP at Home
         # self.server = '98.109.48.234'
-        self.server = '192.168.1.216'
+        # IP address of computer at home
+        # self.server = '192.168.1.216'
+        # IP address at Purdue
+        self.server = '128.211.222.85'
         self.port = 5555
         self.addr = (self.server, self.port)
 

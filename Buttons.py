@@ -101,16 +101,17 @@ class Card:
     x = the x location for where the card will be placed
     y = the y location for where the card will be placed
     '''
-    def __init__(self, screen, card, x, y):
+    def __init__(self, screen, card, scale, x, y):
         self.screen = screen
         self.card = card
         self.x = x
         self.y = y
+        self.scale = scale
         self.draw()
 
     def draw(self):
         self.location = pygame.image.load(f'Playing_Cards/{self.card}.png')
-        self.location = pygame.transform.rotozoom(self.location, 0, .5)
+        self.location = pygame.transform.rotozoom(self.location, 0, self.scale)
         self.screen.blit(self.location, (self.x, self.y))
 
     def hover(self):
