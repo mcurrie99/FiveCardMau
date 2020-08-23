@@ -59,12 +59,25 @@ class Button:
         Render = fonter.render(texter, 1, self.color)
         self.render_width = int(Render.get_width())
         self.render_height = int(Render.get_height())
-        if self.center == True:
-            pygame.draw.rect(self.screen, (0,0,0), (int(self.x - self.render_width/2 - 10), int(self.y - self.render_height/2 - 10), int(self.render_width + 20), int(self.render_height + 20)))
-            self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
-        elif self.center == False:
-            pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
-            self.screen.blit(Render, (self.x + 10, self.y + 10))
+        if self.card == False:
+            if self.center == True:
+                pygame.draw.rect(self.screen, (0,0,0), (int(self.x - self.render_width/2 - 10), int(self.y - self.render_height/2 - 10), int(self.render_width + 20), int(self.render_height + 20)))
+                self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
+            elif self.center == False:
+                pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
+                self.screen.blit(Render, (self.x + 10, self.y + 10))
+        if self.card == True:
+
+            # This might need to be changed in the future
+            self.center = True
+
+            if self.center == True:
+                pygame.draw.rect(self.screen, (0,0,0), (int(self.x - 62.5), int(self.y - 90.75), 125, 181.5))
+                self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
+            # elif self.center == False:
+            #     pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
+            #     self.screen.blit(Render, (self.x + 10, self.y + 10))
+        
 
     def hover(self):
         pos = pygame.mouse.get_pos()

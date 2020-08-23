@@ -129,6 +129,8 @@ class Blackjacks:
             self.votes[j][0] = False
         self.started = False
         self.voters = 0
+        self.round = 0
+        self.turn = 0
         print('Game Ended')
         print(len(self.cards['Cards']))
         return self.started
@@ -166,8 +168,8 @@ class Blackjacks:
             self.end_game()
 
     def change_turn(self):
-        self.player_length = len(self.players) - 2
-        if turn == self.player_length:
+        self.player_length = len(self.players) - 1
+        if self.turn == self.player_length:
             self.round += 1
             self.turn = 0
             print(f'Round Changed to {self.round}')
@@ -346,7 +348,10 @@ class Blackjack:
                 CARD1_DEALER = Card(self.screen, self.server.hand['Dealer'][0], .25, 617, 170)
 
                 try:
-                    CARD2_DEALER = Card(self.screen, self.server.hand['Dealer'][1], .25, 757, 170)
+                    if self.server.round < 3:
+                        CARD2_DEALER = Button(self.screen, '?', 'arial', 90, 819.5, 260.75, (255, 255, 255), True, False)
+                    else:
+                        CARD2_DEALER = Card(self.screen, self.server.hand['Dealer'][1], .25, 757, 170)
                 except:
                     pass
                 try:
@@ -379,12 +384,15 @@ class Blackjack:
                 Stand = True
 
             # Draws the Hit or Stand Buttons to Hit
-            if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100 and Stand == False:
-                self.network.send('Hit')
-                WAIT = 0
-            if STAND.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100 or Stand == True:
+            if Stand == False:
+                if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100 and Stand == False:
+                    self.network.send('Hit')
+                    WAIT = 0
+                if STAND.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
+                    self.network.send('Stand')
+                    WAIT = 0
+            elif Stand == True:
                 self.network.send('Stand')
-                WAIT = 0
 
             # Tells you if it is your turn
             if self.server.turn == self.server.order.index(self.name):
