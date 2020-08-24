@@ -11,7 +11,7 @@ from Buttons import *
 
 class Spoons:
     '''
-    Server side of the game
+    Server side of Spoons
     '''
     def __init__(self, id):
         with open('Cards.json') as json_file:
@@ -193,78 +193,6 @@ class Spoon:
         self.HEIGHT = HEIGHT
         self.game_over = False
 
-    def game(self):
-        voted = False
-
-        #Background
-        background = pygame.image.load('background.png')
-
-        WAIT = 0
-        # Game
-        while not self.game_over:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        sys.exit()
-            self.server = self.network.get_game()
-            if self.server.winner == True:
-                break
-            # Resets screen
-            self.screen.fill((0,0,0))
-            self.screen.blit(background, (0,0))
-
-            # Creates and draws cards that the player holds
-            
-            try:
-                CARD1 = Card(self.screen, self.server.hand[self.name]['Hand'][0], 100, 680)
-                CARD2 = Card(self.screen, self.server.hand[self.name]['Hand'][1], 590, 680)
-                CARD3 = Card(self.screen, self.server.hand[self.name]['Hand'][2], 1080, 680)
-                CARD4 = Card(self.screen, self.server.hand[self.name]['Hand'][3], 1570, 680)
-            except:
-                print('Error at printing cards')
-            try:
-                WAITING = Card(self.screen, self.server.hand[self.name]['Waiting'][0], 1570, 100)
-            except:
-                WAITING = False
-
-            PASS = Button(self.screen, 'Pass', 'arial', 90, 150, 150, (255,255,255), False, False)
-
-            # Draws square under the card the player is hovering over and sends data to server
-            if CARD1.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand(self.server.hand[self.name]['Hand'][0], self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-            if CARD2.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand(self.server.hand[self.name]['Hand'][1], self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-            if CARD3.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand(self.server.hand[self.name]['Hand'][2], self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-            if CARD4.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand(self.server.hand[self.name]['Hand'][3], self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-            if PASS.hover() == True and WAITING != False and WAIT == 100:
-                self.network.change_hand('Pass', self.server.hand[self.name]['Waiting'][0])
-                WAIT = 0
-
-            # Might use not sure yet
-            # WAITING.hover()
-            
-
-            player_y = 100
-            for i, j in enumerate(self.server.players):
-                PLAYER = Button(self.screen, j, 'arial', 60, 960, player_y, (255,255,255), False, True)
-                player_y += PLAYER.render_height + 250
-
-            self.check_winner()
-
-            if WAIT < 100:
-                WAIT += 5
-
-            pygame.display.update()
-
     def lobby(self):
         global close_game
         gamer = False
@@ -311,12 +239,15 @@ class Spoon:
                 self.game()
                 voted = False
 
-    def main_menu(self):
-        join = False
+    def game(self):
+        voted = False
 
-        lob = pygame.image.load('lobby.png')
+        #Background
+        background = pygame.image.load('background.png')
 
-        while join == False:
+        WAIT = 0
+        # Game
+        while not self.game_over:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
@@ -324,23 +255,61 @@ class Spoon:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         sys.exit()
-
+            self.server = self.network.get_game()
+            if self.server.winner == True:
+                break
+            # Resets screen
             self.screen.fill((0,0,0))
-            self.screen.blit(lob, (0,0))
+            self.screen.blit(background, (0,0))
 
+            # Creates and draws cards that the player holds
+            
+            try:
+                CARD1 = Card(self.screen, self.server.hand[self.name]['Hand'][0], .5, 100, 680)
+                CARD2 = Card(self.screen, self.server.hand[self.name]['Hand'][1], .5, 590, 680)
+                CARD3 = Card(self.screen, self.server.hand[self.name]['Hand'][2], .5, 1080, 680)
+                CARD4 = Card(self.screen, self.server.hand[self.name]['Hand'][3], .5, 1570, 680)
+            except:
+                print('Error at printing cards')
+            try:
+                WAITING = Card(self.screen, self.server.hand[self.name]['Waiting'][0], 1570, 100)
+            except:
+                WAITING = False
 
-            MAIN = Button(self.screen, 'Main Menu', 'arial', 35, self.WIDTH/2, 400, (255,255,255), False, True)
-            WELCOME = Button(self.screen, f'Welcome {self.name}', 'arial', 35, 0, 0, (255,255,255), False, False)
-            JOIN = Button(self.screen, 'Join', 'arial', 80, self.WIDTH/2, self.HEIGHT/2, (255,255,255), False, True)
-            clicked = JOIN.hover()
+            PASS = Button(self.screen, 'Pass', 'arial', 90, 150, 150, (255,255,255), False, False)
 
-            if clicked == True:
-                self.server = self.network.send('Spoons')
-                self.lobby()
-            # if clicked == False:
-            #     self.network.send_only('None')
+            # Draws square under the card the player is hovering over and sends data to server
+            if CARD1.hover() == True and WAITING != False and WAIT == 100:
+                self.network.change_hand(self.server.hand[self.name]['Hand'][0], self.server.hand[self.name]['Waiting'][0])
+                WAIT = 0
+            if CARD2.hover() == True and WAITING != False and WAIT == 100:
+                self.network.change_hand(self.server.hand[self.name]['Hand'][1], self.server.hand[self.name]['Waiting'][0])
+                WAIT = 0
+            if CARD3.hover() == True and WAITING != False and WAIT == 100:
+                self.network.change_hand(self.server.hand[self.name]['Hand'][2], self.server.hand[self.name]['Waiting'][0])
+                WAIT = 0
+            if CARD4.hover() == True and WAITING != False and WAIT == 100:
+                self.network.change_hand(self.server.hand[self.name]['Hand'][3], self.server.hand[self.name]['Waiting'][0])
+                WAIT = 0
+            if PASS.hover() == True and WAITING != False and WAIT == 100:
+                self.network.change_hand('Pass', self.server.hand[self.name]['Waiting'][0])
+                WAIT = 0
+
+            
+
+            player_y = 100
+            for i, j in enumerate(self.server.players):
+                PLAYER = Button(self.screen, j, 'arial', 60, 960, player_y, (255,255,255), False, True)
+                player_y += PLAYER.render_height + 250
+
+            self.check_winner()
+
+            if WAIT < 100:
+                WAIT += 5
 
             pygame.display.update()
+
+    
 
 
     # Decides if person is elgible to win

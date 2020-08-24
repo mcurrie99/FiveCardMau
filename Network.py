@@ -6,8 +6,12 @@ from game import *
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = '98.109.48.234'
+        # Public IP at Home
+        # self.server = '98.109.48.234'
+        # IP address of computer at home
         # self.server = '192.168.1.216'
+        # IP address at Purdue
+        self.server = '128.211.222.85'
         self.port = 5555
         self.addr = (self.server, self.port)
 
@@ -57,6 +61,13 @@ class Network:
                 buf += self.client.recv(4-len(buf))
             length = struct.unpack('!I', buf)[0]
             return pickle.loads(self.client.recv(length))
+        except socket.error as e:
+            print(e)
+    
+    def send_name(self, data):
+        try:
+            self.client.send(str.encode(data))
+            return self.client.recv(2048).decode()
         except socket.error as e:
             print(e)
     

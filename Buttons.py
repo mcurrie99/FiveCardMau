@@ -41,7 +41,7 @@ class Button:
         text = font.render(self.text, 1, (255, 255, 255))
         text_height = int(text.get_height())
         text_width = int(text.get_width())
-        screen.blit(text, (self.x + round(self.width/2) - round(text_width/2), self.y + round(self.height/2) - round(text_height/2)))
+        self.screen.blit(text, (self.x + round(self.width/2) - round(text_width/2), self.y + round(self.height/2) - round(text_height/2)))
 
     def click(self):
         pressed = pygame.mouse.get_pressed()[0]
@@ -59,12 +59,25 @@ class Button:
         Render = fonter.render(texter, 1, self.color)
         self.render_width = int(Render.get_width())
         self.render_height = int(Render.get_height())
-        if self.center == True:
-            pygame.draw.rect(self.screen, (0,0,0), (int(self.x - self.render_width/2 - 10), int(self.y - self.render_height/2 - 10), int(self.render_width + 20), int(self.render_height + 20)))
-            self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
-        elif self.center == False:
-            pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
-            self.screen.blit(Render, (self.x + 10, self.y + 10))
+        if self.card == False:
+            if self.center == True:
+                pygame.draw.rect(self.screen, (0,0,0), (int(self.x - self.render_width/2 - 10), int(self.y - self.render_height/2 - 10), int(self.render_width + 20), int(self.render_height + 20)))
+                self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
+            elif self.center == False:
+                pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
+                self.screen.blit(Render, (self.x + 10, self.y + 10))
+        if self.card == True:
+
+            # This might need to be changed in the future
+            self.center = True
+
+            if self.center == True:
+                pygame.draw.rect(self.screen, (0,0,0), (int(self.x - 62.5), int(self.y - 90.75), 125, 181.5))
+                self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
+            # elif self.center == False:
+            #     pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
+            #     self.screen.blit(Render, (self.x + 10, self.y + 10))
+        
 
     def hover(self):
         pos = pygame.mouse.get_pos()
@@ -101,16 +114,17 @@ class Card:
     x = the x location for where the card will be placed
     y = the y location for where the card will be placed
     '''
-    def __init__(self, screen, card, x, y):
+    def __init__(self, screen, card, scale, x, y):
         self.screen = screen
         self.card = card
         self.x = x
         self.y = y
+        self.scale = scale
         self.draw()
 
     def draw(self):
         self.location = pygame.image.load(f'Playing_Cards/{self.card}.png')
-        self.location = pygame.transform.rotozoom(self.location, 0, .5)
+        self.location = pygame.transform.rotozoom(self.location, 0, self.scale)
         self.screen.blit(self.location, (self.x, self.y))
 
     def hover(self):
