@@ -22,7 +22,7 @@ class Blackjacks:
         self.started = False
         self.votes = {}
         self.voters = 0
-        self.order = []
+        self.order = ['Dealer']
         self.winner = False
         self.winner_name = ''
         self.hand.update({'Dealer':[]})
@@ -168,13 +168,19 @@ class Blackjacks:
             self.end_game()
 
     def change_turn(self):
-        self.player_length = len(self.players) - 1
+        self.player_length = len(self.order) - 1
         if self.turn == self.player_length:
             self.round += 1
             self.turn = 0
             print(f'Round Changed to {self.round}')
         else:
             turn += 1
+
+        if self.round != 3 and self.order[self.turn] == 'Dealer':
+            turn += 1
+
+        if self.round == 3:
+            self.play_dealer()
 
     def check_points(self):
         for i, j in enumerate(self.points):
@@ -228,6 +234,10 @@ class Blackjacks:
                 print()
 
                 self.points[j][0] = 'Error'
+
+    def play_dealer(self):
+        if self.points['Dealer'] == 'Over 21' or self.points['Dealer'] >= 17:
+            self.stand
         
 
 
@@ -376,7 +386,7 @@ class Blackjack:
             # Playable Buttons
             if Stand == False:
                 HIT = Button(self.screen, 'Hit', 'arial', 90, 150, 150, (255,255,255), False, False)
-            STAND = Button(self.screen, 'Stand', 'arial', 90, (200 + HIT.render_width), 150, (255, 255, 255), False, False)
+                STAND = Button(self.screen, 'Stand', 'arial', 90, (200 + HIT.render_width), 150, (255, 255, 255), False, False)
 
             # Shows the calculated amount of points that you have at the moment
             POINTS = Button(self.screen, f'Points: {self.server.points[self.name][0]}', 'arial', 90, 105, (680 - (STAND.render_height + 50)), (255, 255, 255), False, False)
@@ -397,6 +407,8 @@ class Blackjack:
             # Tells you if it is your turn
             if self.server.turn == self.server.order.index(self.name):
                 TURN = Button(self.screen, 'It is your turn', 'arial', 90, self.WIDTH/2, 100, (0, 255, 0), False, True)
+            elif self.Stand == True:
+                TURN = Button(self.screen, 'Your are standing', 'arial', 90, self.WIDTH/2, 100, (0,0,255), False, True)
             else:
                 current_turn = self.server.order[self.server.turn]
                 TURN = Button(self.screen, f'It is {current_turn}\'s turn', 'arial', 90, self.WIDTH/2, 100, (255, 0, 0), False, True)
