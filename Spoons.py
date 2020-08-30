@@ -272,8 +272,9 @@ class Spoon:
             except:
                 print('Error at printing cards')
             try:
-                WAITING = Card(self.screen, self.server.hand[self.name]['Waiting'][0], 1570, 100)
+                WAITING = Card(self.screen, self.server.hand[self.name]['Waiting'][0], .5,  1570, 100)
             except:
+                print('Error printing Card')
                 WAITING = False
 
             PASS = Button(self.screen, 'Pass', 'arial', 90, 150, 150, (255,255,255), False, False)

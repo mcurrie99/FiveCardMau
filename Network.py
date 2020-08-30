@@ -55,6 +55,7 @@ class Network:
 
     def send(self, data):
         try:
+            print(data)
             self.client.send(str.encode(data))
             buf = b''
             while len(buf) < 4:

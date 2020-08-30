@@ -148,32 +148,41 @@
 
 
 
-count_low = 0
-count_high = 0
-Ace = False
-hello = input()
-count_add = hello.split('_')
-print(count_add)
-check = ['1','2','3','4','5','6','7','8','9','10']
+# count_low = 0
+# count_high = 0
+# Ace = False
+# hello = input()
+# count_add = hello.split('_')
+# print(count_add)
+# check = ['1','2','3','4','5','6','7','8','9','10']
 
-for j in check:
-    if count_add[0] == j:
-        bruh = int(count_add[0])
-        count_low += bruh
-        count_high += bruh
-        break
-if count_add[0] == 'king' or count_add[0] == 'queen' or count_add[0] == 'jack':
-    count_low += 10
-    count_high += 10
-elif count_add[0] == 'ace':
-    if Ace == False:
-        count_low += 1
-        count_high += 11
-        Ace = True
-    elif Ace == True:
-        count_low += 1
-        count_high += 1
+# for j in check:
+#     if count_add[0] == j:
+#         bruh = int(count_add[0])
+#         count_low += bruh
+#         count_high += bruh
+#         break
+# if count_add[0] == 'king' or count_add[0] == 'queen' or count_add[0] == 'jack':
+#     count_low += 10
+#     count_high += 10
+# elif count_add[0] == 'ace':
+#     if Ace == False:
+#         count_low += 1
+#         count_high += 11
+#         Ace = True
+#     elif Ace == True:
+#         count_low += 1
+#         count_high += 1
 
-print(count_low)
-print(count_high)
-print(Ace)
+# print(count_low)
+# print(count_high)
+# print(Ace)
+
+tester = ''
+test = ('Five', 'Nine', 'Eight')
+for i in range(0, len(test)):
+    if i == 0:
+        tester += test[i]
+    else:
+        tester += f', {test[i]}'
+print(f'Winner(s): {tester}')

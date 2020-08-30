@@ -17,18 +17,21 @@ class Blackjacks:
         with open('Cards.json') as json_file:
             self.cards = json.load(json_file)
         self.players = {}
-        self.points = {}
+        self.points = {'Dealer': [0]}
         self.hand = {}
         self.started = False
         self.votes = {}
         self.voters = 0
-        self.order = ['Dealer']
-        self.winner = False
+        self.order = []
+        self.over = False
         self.winner_name = ''
         self.hand.update({'Dealer':[]})
         self.points.update({'Dealer':[0]})
         self.turn = 0
         self.round = 1
+        self.stands = 0
+        self.dealer_play = False
+        # self.dealer_display_points = 0
 
 
     def init_deal(self):
@@ -47,7 +50,6 @@ class Blackjacks:
         print(self.cards['Cards'][r])
         self.cards['Cards'].pop(r)
         self.check_points()
-        self.change_turn()
 
     def stand(self,Name):
         self.check_points()
@@ -111,16 +113,11 @@ class Blackjacks:
         except:
             # return game back preparing state
             pass
-
-    def change_winner(self, name):
-        print('changing winner')
-        self.winner = True
-        self.winner_name = name
-        self.end_game()
         
     
     def end_game(self):
         print('Ending Game')
+        print(self.points['Dealer'][0])
         for i, j in enumerate(self.hand):
             for k in range(0, len(self.hand[j])):
                 self.cards['Cards'].append(self.hand[j][0])
@@ -129,8 +126,9 @@ class Blackjacks:
             self.votes[j][0] = False
         self.started = False
         self.voters = 0
-        self.round = 0
+        self.round = 1
         self.turn = 0
+        self.dealer_play = False
         print('Game Ended')
         print(len(self.cards['Cards']))
         return self.started
@@ -138,7 +136,8 @@ class Blackjacks:
     def start_game(self):
         self.started = True
         self.init_deal()
-        self.winner = False
+        self.over = False
+        self.winner_name = ''
         print('Starting Game')
         return self.started
 
@@ -165,22 +164,24 @@ class Blackjacks:
 
     def empty_lobby(self):
         if len(self.players) == 0 and self.started == True:
+            print('Empty Lobby')
             self.end_game()
 
     def change_turn(self):
         self.player_length = len(self.order) - 1
         if self.turn == self.player_length:
             self.round += 1
+            self.stands = 0
             self.turn = 0
             print(f'Round Changed to {self.round}')
         else:
             turn += 1
 
-        if self.round != 3 and self.order[self.turn] == 'Dealer':
-            turn += 1
-
-        if self.round == 3:
+        if self.round == 2 and self.dealer_play == False:
             self.play_dealer()
+        elif self.round == 4:
+            self.over = True
+            self.end_game()
 
     def check_points(self):
         for i, j in enumerate(self.points):
@@ -235,9 +236,64 @@ class Blackjacks:
 
                 self.points[j][0] = 'Error'
 
+
+            # if self.round != 1:
+            #     self.dealer_display_points = self.points['Dealer'][0]
+            # else:
+            #     dealer_add = self.points['Dealer'][0].split('_')[0]
+            #     for i in check:
+            #         if dealer_add == i:
+            #             self.dealer_display_points = int(dealer_add)
+
+            #     if dealer_add == 'king' or dealer_add == 'queen' or dealer_add == 'jack':
+            #         self.dealer_display_points = 10
+            #     elif dealer_add == 'ace':
+            #         self.dealer_display_points = 11
+                        
+
+
+            
+
     def play_dealer(self):
-        if self.points['Dealer'] == 'Over 21' or self.points['Dealer'] >= 17:
-            self.stand
+        print('Dealer Playing')
+        while True:
+            if self.points['Dealer'][0] == 'Over 21' or self.points['Dealer'][0] >= 17:
+                break
+            else:
+                self.deal('Dealer')
+
+            self.check_points()
+        self.dealer_play = True
+        print('Dealer Standing')
+        self.stand('Dealer')
+        self.winners()
+
+    def winners(self):
+        winner_num = 0
+        for i, j in enumerate(self.points):
+            if i == 0:
+                if self.points[j][0] == 'Over 21':
+                    for k, l in enumerate(self.players):
+                        if k == 0:
+                            self.winner_name += l
+                        else:
+                            self.winner_name += f', {l}'
+                        self.winner_name
+                    winner_num += 1
+                    break
+                continue
+            if self.points[j][0] != 'Over 21':
+                if self.points[j][0] >= self.points['Dealer'][0]:
+                    if winner_num == 0:
+                        self.winner_name += j
+                        winner_num += 1
+                    else:
+                        self.winner_name += f', {j}'
+        if winner_num == 0:
+            self.winner_name = 'None'
+        # self.over = True
+        # self.end_game()
+        
         
 
 
@@ -292,8 +348,12 @@ class Blackjack:
             
             TOTAL_VOTES = Button(self.screen, f'Total Votes: {self.server.voters}', 'arial', 35, 50, 980, (255,0,0), False, False)
 
-            if self.server.winner_name != '':
-                WINNER_NAME = Button(self.screen, f'{self.server.winner_name} won the last game', 'arial', 50, self.WIDTH/2, 200, (0,255,0), False, True)
+            if self.server.winner_name == '':
+                pass
+            elif self.server.winner_name == 'None':
+                WINNER_NAME = Button(self.screen, f'Winner(s): {self.server.winner_name}', 'arial', 50, self.WIDTH/2, 200, (255,0,0), False, True)
+            else:
+                WINNER_NAME = Button(self.screen, f'Winner(s): {self.server.winner_name}', 'arial', 50, self.WIDTH/2, 200, (0,255,0), False, True)
 
             pygame.display.update()
 
@@ -304,6 +364,8 @@ class Blackjack:
     def game(self):
         voted = False
         Stand = False
+
+        counter = 0
 
         #Background
         background = pygame.image.load('background.png')
@@ -319,8 +381,7 @@ class Blackjack:
                     if event.key == pygame.K_q:
                         sys.exit()
             self.server = self.network.get_game()
-            if self.server.winner == True:
-                break
+                
             # Resets screen
             self.screen.fill((0,0,0))
             self.screen.blit(background, (0,0))
@@ -369,7 +430,7 @@ class Blackjack:
                 except:
                     pass
                 try:
-                    CARD4_DEALER = Card(self.screen, self.server.hand['Dealer'][3], .25,  1037, 170)
+                    CARD4_DEALER = Card(self.screen, self.server.hand['Dealer'][3], .25, 1037, 170)
                 except:
                     pass
                 try:
@@ -390,7 +451,11 @@ class Blackjack:
 
             # Shows the calculated amount of points that you have at the moment
             POINTS = Button(self.screen, f'Points: {self.server.points[self.name][0]}', 'arial', 90, 105, (680 - (STAND.render_height + 50)), (255, 255, 255), False, False)
-            if self.server.points[self.name][0] == 21 or self.server.points[self.name][0] == 'Over 21':
+
+
+            # DEALER_POINTS = Button(self.screen, f'Points: {self.server.dealer_display_points}', 'arial', 90, self.WIDTH/2, 280, (0, 0, 255), False, False)
+
+            if self.server.points[self.name][0] == 'Over 21':
                 Stand = True
 
             # Draws the Hit or Stand Buttons to Hit
@@ -400,6 +465,7 @@ class Blackjack:
                     WAIT = 0
                 if STAND.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
                     self.network.send('Stand')
+                    Stand = True
                     WAIT = 0
             elif Stand == True:
                 self.network.send('Stand')
@@ -424,6 +490,12 @@ class Blackjack:
 
             if WAIT < 100:
                 WAIT += 5
+
+            
+            if self.server.over == True:
+                time.sleep(3)
+                print('End Game')
+                break
 
             pygame.display.update()
 
