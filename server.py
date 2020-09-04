@@ -131,7 +131,7 @@ def spoons_server(name, p):
 
 def blackjack_server(name, p):
     blackjack.add_player(name, p)
-    print(name, 'Was added to a Spoons game')
+    print(name, 'Was added to a Blackjack game')
     packet = pickle.dumps(blackjack)
     length = struct.pack('!I', len(packet))
     packet = length + packet
