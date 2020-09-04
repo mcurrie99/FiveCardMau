@@ -31,7 +31,7 @@ class Blackjacks:
         self.round = 1
         self.stands = 0
         self.dealer_play = False
-        # self.dealer_display_points = 0
+        self.dealer_display_points = 0
 
 
     def init_deal(self):
@@ -131,6 +131,7 @@ class Blackjacks:
         self.dealer_play = False
         print('Game Ended')
         print(len(self.cards['Cards']))
+        print(self.hand)
         return self.started
 
     def start_game(self):
@@ -236,37 +237,41 @@ class Blackjacks:
 
                 self.points[j][0] = 'Error'
 
+            if self.started == True:
+                if self.round != 1:
+                    print('setting display points 1')
+                    self.dealer_display_points = self.points['Dealer'][0]
+                else:
+                    print('setting display points 2')
+                    dealer_add = self.hand['Dealer'][0].split('_')[0]
+                    print(dealer_add)
+                    for i in check:
+                        if dealer_add == i:
+                            self.dealer_display_points = int(dealer_add)
 
-            # if self.round != 1:
-            #     self.dealer_display_points = self.points['Dealer'][0]
-            # else:
-            #     dealer_add = self.points['Dealer'][0].split('_')[0]
-            #     for i in check:
-            #         if dealer_add == i:
-            #             self.dealer_display_points = int(dealer_add)
-
-            #     if dealer_add == 'king' or dealer_add == 'queen' or dealer_add == 'jack':
-            #         self.dealer_display_points = 10
-            #     elif dealer_add == 'ace':
-            #         self.dealer_display_points = 11
+                    if dealer_add == 'king' or dealer_add == 'queen' or dealer_add == 'jack':
+                        self.dealer_display_points = 10
+                    elif dealer_add == 'ace':
+                        self.dealer_display_points = 11
                         
 
 
             
 
     def play_dealer(self):
-        print('Dealer Playing')
-        while True:
-            if self.points['Dealer'][0] == 'Over 21' or self.points['Dealer'][0] >= 17:
-                break
-            else:
-                self.deal('Dealer')
+        if self.started == True:
+            print('Dealer Playing')
+            while True:
+                if self.points['Dealer'][0] == 'Over 21' or self.points['Dealer'][0] >= 17:
+                    break
+                else:
+                    self.deal('Dealer')
 
-            self.check_points()
-        self.dealer_play = True
-        print('Dealer Standing')
-        self.stand('Dealer')
-        self.winners()
+                self.check_points()
+            self.dealer_play = True
+            print('Dealer Standing')
+            self.stand('Dealer')
+            self.winners()
 
     def winners(self):
         winner_num = 0
@@ -451,9 +456,7 @@ class Blackjack:
 
             # Shows the calculated amount of points that you have at the moment
             POINTS = Button(self.screen, f'Points: {self.server.points[self.name][0]}', 'arial', 90, 105, (680 - (STAND.render_height + 50)), (255, 255, 255), False, False)
-
-
-            # DEALER_POINTS = Button(self.screen, f'Points: {self.server.dealer_display_points}', 'arial', 90, self.WIDTH/2, 280, (0, 0, 255), False, False)
+            DEALER_POINTS = Button(self.screen, f'Points: {self.server.dealer_display_points}', 'arial', 50, self.WIDTH/2, 400, (0, 0, 255), False, True)
 
             if self.server.points[self.name][0] == 'Over 21':
                 Stand = True
