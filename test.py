@@ -178,11 +178,20 @@
 # print(count_high)
 # print(Ace)
 
-tester = ''
-test = ('Five', 'Nine', 'Eight')
-for i in range(0, len(test)):
-    if i == 0:
-        tester += test[i]
-    else:
-        tester += f', {test[i]}'
-print(f'Winner(s): {tester}')
+# tester = ''
+# test = ('Five', 'Nine', 'Eight')
+# for i in range(0, len(test)):
+#     if i == 0:
+#         tester += test[i]
+#     else:
+#         tester += f', {test[i]}'
+# print(f'Winner(s): {tester}')
+
+# print('What does "by the skin oflkjasdf" even  mean?')
+
+def thingy():
+    print(x)
+
+x = 5
+
+thingy()
