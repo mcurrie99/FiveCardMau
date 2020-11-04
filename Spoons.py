@@ -131,7 +131,7 @@ class Spoons:
         self.started = True
         self.deal()
         self.winner = False
-        print('Starting Game')
+        print('\n\n\n\nStarting Game')
         return self.started
 
     def vote(self, Name):

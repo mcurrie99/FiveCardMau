@@ -46,7 +46,7 @@ class Blackjacks:
         r = random.randint(0, len(self.cards['Cards']) - 1)
         print(r)
         self.hand[Name].append(self.cards['Cards'][r])
-        print(self.cards['Cards'][r])
+        print(f"{Name} was dealt {self.cards['Cards'][r]}")
         self.cards['Cards'].pop(r)
         self.check_points()
 
@@ -244,7 +244,7 @@ class Blackjacks:
                 else:
                     # print('setting display points 2')
                     dealer_add = self.hand['Dealer'][0].split('_')[0]
-                    print(dealer_add)
+                    # print(dealer_add)
                     for i in check:
                         if dealer_add == i:
                             self.dealer_display_points = int(dealer_add)
@@ -317,7 +317,7 @@ class Blackjack:
         global close_game
         gamer = False
         close_game = True
-        voted = False
+        self.voted = False
         lob = pygame.image.load('background.png')
         # game_over = True
         # network.change_hand('this', 'works')
@@ -339,13 +339,13 @@ class Blackjack:
                 PLAYER = Button(self.screen, j, 'arial', 40, 1500, player_y, (255,255,255), False, False)
                 player_y += PLAYER.render_height + 50
 
-            if voted == False:
+            if self.voted == False:
                 VOTE = Button(self.screen, 'Vote to Start Game', 'arial', 35, 50, 880, (0,255,0), False, False)
                 clicked = VOTE.hover()
                 if clicked == True:
                     self.network.send('voted')
-                    voted = True
-            elif voted == True:
+                    self.voted = True
+            elif self.voted == True:
                 VOTE = Button(self.screen, 'You Have Voted', 'arial', 35, 50, 880, (255,0,0), False, False)
             
             TOTAL_VOTES = Button(self.screen, f'Total Votes: {self.server.voters}', 'arial', 35, 50, 980, (255,0,0), False, False)
@@ -361,11 +361,11 @@ class Blackjack:
 
             if self.server.started == True:
                 self.game()
-                voted = False
+                self.voted = False
 
     def game(self):
-        voted = False
-        Stand = False
+        self.voted = False
+        self.Stand = False
 
         counter = 0
 
@@ -447,27 +447,27 @@ class Blackjack:
                 WAITING = False
 
             # Playable Buttons
-            if Stand == False:
+            if self.Stand == False:
                 HIT = Button(self.screen, 'Hit', 'arial', 90, 150, 150, (255,255,255), False, False)
-                STAND = Button(self.screen, 'Stand', 'arial', 90, (200 + HIT.render_width), 150, (255, 255, 255), False, False)
+                self.STAND = Button(self.screen, 'Stand', 'arial', 90, (200 + HIT.render_width), 150, (255, 255, 255), False, False)
 
             # Shows the calculated amount of points that you have at the moment
-            POINTS = Button(self.screen, f'Points: {self.server.points[self.name][0]}', 'arial', 90, 105, (680 - (STAND.render_height + 50)), (255, 255, 255), False, False)
+            POINTS = Button(self.screen, f'Points: {self.server.points[self.name][0]}', 'arial', 90, 105, (680 - (self.STAND.render_height + 50)), (255, 255, 255), False, False)
             DEALER_POINTS = Button(self.screen, f'Points: {self.server.dealer_display_points}', 'arial', 50, self.WIDTH/2, 400, (0, 0, 255), False, True)
 
             if self.server.points[self.name][0] == 'Over 21':
-                Stand = True
+                self.Stand = True
 
             # Draws the Hit or Stand Buttons to Hit
-            if Stand == False:
-                if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100 and Stand == False:
+            if self.Stand == False and self.server.turn == self.server.order.index(self.name):
+                if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100 and self.Stand == False:
                     self.network.send('Hit')
                     WAIT = 0
-                if STAND.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
+                if self.STAND.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100:
                     self.network.send('Stand')
-                    Stand = True
+                    self.Stand = True
                     WAIT = 0
-            elif Stand == True:
+            elif self.Stand == True:
                 self.network.send('Stand')
 
             # Tells you if it is your turn
