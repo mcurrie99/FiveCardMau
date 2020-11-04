@@ -33,7 +33,6 @@ class Blackjacks:
         self.dealer_play = False
         self.dealer_display_points = 0
 
-
     def init_deal(self):
         for i, j in enumerate(self.hand):
             for k in range(0,2):
@@ -114,8 +113,8 @@ class Blackjacks:
             # return game back preparing state
             pass
         
-    
     def end_game(self):
+        print(self.order)
         print('Ending Game')
         print(self.points['Dealer'][0])
         for i, j in enumerate(self.hand):
@@ -139,7 +138,8 @@ class Blackjacks:
         self.init_deal()
         self.over = False
         self.winner_name = ''
-        print('Starting Game')
+        self.round = 1
+        print('\n\n\n\nStarting Game')
         return self.started
 
     def vote(self, Name):
@@ -239,10 +239,10 @@ class Blackjacks:
 
             if self.started == True:
                 if self.round != 1:
-                    print('setting display points 1')
+                    # print('setting display points 1')
                     self.dealer_display_points = self.points['Dealer'][0]
                 else:
-                    print('setting display points 2')
+                    # print('setting display points 2')
                     dealer_add = self.hand['Dealer'][0].split('_')[0]
                     print(dealer_add)
                     for i in check:
@@ -254,10 +254,6 @@ class Blackjacks:
                     elif dealer_add == 'ace':
                         self.dealer_display_points = 11
                         
-
-
-            
-
     def play_dealer(self):
         if self.started == True:
             print('Dealer Playing')
@@ -265,6 +261,7 @@ class Blackjacks:
                 if self.points['Dealer'][0] == 'Over 21' or self.points['Dealer'][0] >= 17:
                     break
                 else:
+                    print('Dealing Dealer')
                     self.deal('Dealer')
 
                 self.check_points()
