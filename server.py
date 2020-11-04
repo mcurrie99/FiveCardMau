@@ -103,9 +103,9 @@ def threaded_client(conn, p):
                         except:
                             break
     
-                            spoons.remove_player(name)
-                            print(spoons.players)
-                            spoons.empty_lobby()
+                        spoons.remove_player(name)
+                        print(spoons.players)
+                        spoons.empty_lobby()
 
                 elif game_join == 'Blackjack':
                     blackjack.add_player(name, p)
@@ -153,9 +153,9 @@ def threaded_client(conn, p):
                         except:
                             break
                         
-                        blackjack.remove_player(name)
-                        print(blackjack.players)
-                        blackjack.empty_lobby()
+                    blackjack.remove_player(name)
+                    print(blackjack.players)
+                    blackjack.empty_lobby()
                 elif not game_join:
                     break
                 # else:
