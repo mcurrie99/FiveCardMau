@@ -189,9 +189,36 @@
 
 # print('What does "by the skin oflkjasdf" even  mean?')
 
-def thingy():
-    print(x)
+# L_value = float(input('Input the value of your loan: '))
+# i_rate = float(input('Input the monthly interest rate on the loan: '))
+# n_mo = int(input('Input the number of months: '))
+# m_pay = float(input('Input the amount you are paying per month: '))
 
-x = 5
+# cl_val = L_value
+# for i in range(1, n_mo+1):
+#     cl_val = cl_val*(1+(i_rate/100))-m_pay
+#     print(f'Loan value after {i} months is ${cl_val:.2f}.')
 
-thingy()
+
+# mat_a = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]
+
+# for i in range(0,len(mat_a)):
+#     mat_a[i][3] = 0
+# mat_a[1][1] = 66
+# mat_a[3][0:3] = [4,4,4]
+
+temp = float(input('What is the temperature in degrees Celcius: '))
+press = float(input('What is the pressure in atmospheres: '))
+
+high_t = 100
+high_p = 2.0
+
+if temp <= high_t and press <= high_p:
+    print('Good Combination')
+elif temp > high_t and press > high_p:
+    print('too hot')
+    print('too much pressure')
+elif temp > high_t and press <= high_p:
+    print('too hot')
+elif temp <= high_t and press > high_p:
+    print('too much pressure')
