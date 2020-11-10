@@ -207,18 +207,50 @@
 # mat_a[1][1] = 66
 # mat_a[3][0:3] = [4,4,4]
 
-temp = float(input('What is the temperature in degrees Celcius: '))
-press = float(input('What is the pressure in atmospheres: '))
+# temp = float(input('What is the temperature in degrees Celcius: '))
+# press = float(input('What is the pressure in atmospheres: '))
 
-high_t = 100
-high_p = 2.0
+# high_t = 100
+# high_p = 2.0
 
-if temp <= high_t and press <= high_p:
-    print('Good Combination')
-elif temp > high_t and press > high_p:
-    print('too hot')
-    print('too much pressure')
-elif temp > high_t and press <= high_p:
-    print('too hot')
-elif temp <= high_t and press > high_p:
-    print('too much pressure')
+# if temp <= high_t and press <= high_p:
+#     print('Good Combination')
+# elif temp > high_t and press > high_p:
+#     print('too hot')
+#     print('too much pressure')
+# elif temp > high_t and press <= high_p:
+#     print('too hot')
+# elif temp <= high_t and press > high_p:
+#     print('too much pressure')
+
+
+#QUESTION 2
+# i = 0
+# x = 2
+# y = 3
+# while i < 10:
+#     for z in [x,y]:
+#         i = i+z
+#         if x < 3:
+#             x+=1
+
+# print(x)
+
+
+#QUESTION 3
+# z=[]
+# for x in [1,2,3]:
+#     z.append(x)
+#     for y in [1,2,3]:
+#         z.append(y)
+# print(z)
+
+#QUESTION 4
+x = [2,6]
+c=0
+for a in x:
+    for b in range(5,3,-3):
+        c = a+b
+print(a)
+print(b)
+print(c)
