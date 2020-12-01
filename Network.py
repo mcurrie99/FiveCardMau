@@ -86,6 +86,3 @@ class Network:
         # Further investigation might conclude that this is not needed if processing is done on server side.
         for i in range(0, len(hand)):
             self.client.send(str.encode(hand[i]))
-
-    def alter_hand(self):
-        pass

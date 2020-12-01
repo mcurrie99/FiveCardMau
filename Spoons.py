@@ -15,15 +15,15 @@ class Spoons:
     '''
     def __init__(self, id):
         with open('Cards.json') as json_file:
-            self.cards = json.load(json_file)
-        self.players = {}
-        self.hand = {}
-        self.started = False
-        self.votes = {}
-        self.voters = 0
-        self.order = []
-        self.winner = False
-        self.winner_name = ''
+            self.cards = json.load(json_file)# Imports all card names
+        self.players = {} # Contains the names of all the players and ids that are joining
+        self.hand = {} # Contains the hand of each person that is playing
+        self.started = False # Boolean for whether the game has starated or not
+        self.votes = {} # Contains players names and whether they have voted to start the game or not yet
+        self.voters = 0 # How many people have voted to start the game
+        self.order = [] # Contains the order of who is going to go
+        self.winner = False # Boolean to decide whether the game should end or not
+        self.winner_name = '' # Name of the person who won last
 
     def deal(self):
         for i, j in enumerate(self.hand):
@@ -102,7 +102,7 @@ class Spoons:
             pass
 
     def change_winner(self, name):
-        print('changing winner')
+        print(f'Changing winner to {name}')
         self.winner = True
         self.winner_name = name
         self.end_game()
@@ -152,12 +152,14 @@ class Spoons:
                     self.voters += 1
         else:
             self.empty_lobby()
-        if self.voters == len(self.votes) and self.voters > 0:
+        if self.voters == len(self.votes) and self.voters > 1:
             self.start_game()
 
     def empty_lobby(self):
         if len(self.players) == 0 and self.started == True:
             self.end_game()
+        elif len(self.players) == 0 and self.started == False:
+            self.winner_name == ''
 
     def change_hand(self, name, new_wait, new_hand):
         if new_wait != 'Pass':

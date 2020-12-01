@@ -491,7 +491,6 @@ class Blackjack:
                 PLAYER = Button(self.screen, j, 'arial', 60, 1500, player_y, (255,255,255), False, False)
                 player_y += PLAYER.render_height + 250
 
-            # self.check_winner()
 
             if WAIT < 100:
                 WAIT += 5
@@ -503,30 +502,3 @@ class Blackjack:
                 break
 
             pygame.display.update()
-
-
-
-    # Decides if person is elgible to win
-    def check_winner(self):
-        Card1 = self.server.hand[self.name][0].split('_')
-        try:
-            Card2 = self.server.hand[self.name][1].split('_')
-        except:
-            pass
-        try:
-            Card3 = self.server.hand[self.name][2].split('_')
-        except:
-            pass
-        try:
-            Card4 = self.server.hand[self.name][3].split('_')
-        except:
-            pass
-        try:
-            Card5 = self.server.hand[self.name][4].split('_')
-        except:
-            pass
-
-        if (Card1[0] == Card2[0]) and (Card1[0] == Card3[0]) and (Card1[0] == Card4[0]):
-            WINNER = Button(self.screen, 'Winner', 'arial', 60, self.WIDTH/2, 730, (0,255,0), False, True)
-            if WINNER.hover() == True:
-                self.network.send('Winner')

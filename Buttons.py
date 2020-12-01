@@ -35,24 +35,12 @@ class Button:
         self.center = center # center = Use the center as reference
         self.draw_text() # Draws the text
 
-    def draw(self, win): # Not ever used
-        # Might not need this either, see draw_tect()
-        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height)) # Draw rectangle
-        font = pygame.font.SysFont('arial', 40)
-        text = font.render(self.text, 1, (255, 255, 255))
-        text_height = int(text.get_height())
-        text_width = int(text.get_width())
-        self.screen.blit(text, (self.x + round(self.width/2) - round(text_width/2), self.y + round(self.height/2) - round(text_height/2)))
-
     def click(self): # Checks if the button is clicked
         pressed = pygame.mouse.get_pressed()[0] # State of what your mouse left click is
         if pressed == True: # Is the left clicked pressed
             return True
         else:
             return False
-    
-    def moving(self, pos, button_hold): # Will eventually be worked on
-        pass
 
     def draw_text(self):
         texter = str(self.text) # Makes the text into a string
@@ -71,17 +59,17 @@ class Button:
                 pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
                 # Renders the text that is given
                 self.screen.blit(Render, (self.x + 10, self.y + 10))
-        # if self.card == True: # NOT USED
+        if self.card == True: # NOT USED
 
-        #     # This might need to be changed in the future
-        #     self.center = True
+            # This might need to be changed in the future
+            self.center = True
 
-        #     if self.center == True:
-        #         pygame.draw.rect(self.screen, (0,0,0), (int(self.x - 62.5), int(self.y - 90.75), 125, 181.5))
-        #         self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
-        #     # elif self.center == False:
-        #     #     pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
-        #     #     self.screen.blit(Render, (self.x + 10, self.y + 10))
+            if self.center == True:
+                pygame.draw.rect(self.screen, (0,0,0), (int(self.x - 62.5), int(self.y - 90.75), 125, 181.5))
+                self.screen.blit(Render, (int(self.x - self.render_width/2), int(self.y - self.render_height/2)))
+            # elif self.center == False:
+            #     pygame.draw.rect(self.screen, (0,0,0), (self.x, self.y, int(self.render_width + 20), int(self.render_height + 20)))
+            #     self.screen.blit(Render, (self.x + 10, self.y + 10))
         
 
     def hover(self):
@@ -101,10 +89,10 @@ class Button:
             else:
                 return False
         elif self.center == False:
-            upper_x = self.x + self.render_width + 10 # Right side of rectangle
+            upper_x = self.x + self.render_width + 20 # Right side of rectangle
             lower_x = self.x # Left side of rectangle
             upper_y = self.y # Top of rectangle
-            lower_y = self.y + self.render_height + 10 # Bottom of Rectangle
+            lower_y = self.y + self.render_height + 20 # Bottom of Rectangle
             if ((mouse_x <= upper_x) and (mouse_x >= lower_x)) and ((mouse_y >= upper_y) and (mouse_y <= lower_y)):
                 pygame.draw.rect(self.screen, (255,255,255), (self.x - 10, self.y - 10, int(self.render_width + 40), int(self.render_height + 40)))
                 self.draw_text()

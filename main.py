@@ -35,7 +35,7 @@ def main():
     pygame.init()
 
     # Sets up screen size, you could use pygame.RESIZABLE or pygame.FULLSCREEN
-    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
     pygame.display.set_caption('Cards')
     
     # Background Music
@@ -61,8 +61,12 @@ def connect_server(network):
         if player == 'Good':
             launch = True
             break
-        else:
+        elif player == 'Not':
             print('Name is already taken') # Enter name again
+        else:
+            print('Could not connect to Server, try launching again.')
+            time.sleep(3)
+            sys.exit()
         
         
 
