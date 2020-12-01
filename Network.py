@@ -51,10 +51,10 @@ class Network:
             # Asks for updated version of game
             self.client.send(str.encode('get_game')) # Asks server for game object
             buf = b''
-            while len(buf) < 4: # Gets length of game
+            while len(buf) < 4: # Gets size of game
                 buf += self.client.recv(4-len(buf))
-            length = struct.unpack('!I', buf)[0]
-            return pickle.loads(self.client.recv(length))
+            length = struct.unpack('!I', buf)[0] # size of incoming file
+            return pickle.loads(self.client.recv(length)) # Receices game file
         except socket.error as e:
             print(e)
 
@@ -63,23 +63,23 @@ class Network:
             print(data)
             self.client.send(str.encode(data))
             buf = b''
-            while len(buf) < 4:
+            while len(buf) < 4:# Gets size of game
                 buf += self.client.recv(4-len(buf))
-            length = struct.unpack('!I', buf)[0]
-            return pickle.loads(self.client.recv(length))
+            length = struct.unpack('!I', buf)[0]# size of incoming file
+            return pickle.loads(self.client.recv(length))# Receices game file
         except socket.error as e:
             print(e)
     
     def send_name(self, data):
         try:
-            self.client.send(str.encode(data))
-            return self.client.recv(2048).decode()
+            self.client.send(str.encode(data)) # Sends name
+            return self.client.recv(2048).decode() # Receives data
         except socket.error as e:
             print(e)
     
     def send_only(self, data):
         try:
-            self.client.send(str.encode(data))
+            self.client.send(str.encode(data)) # Sends data
         except socket.error as e:
             print(e)
     def send_hand(self, hand):
