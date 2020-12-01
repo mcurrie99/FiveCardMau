@@ -35,7 +35,7 @@ def main():
     pygame.init()
 
     # Sets up screen size, you could use pygame.RESIZABLE or pygame.FULLSCREEN
-    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
     pygame.display.set_caption('Cards')
     
     # Background Music
