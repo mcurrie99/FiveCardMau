@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['icon=icon.ico', 'main.py'],
+a = Analysis(['main.py'],
              pathex=['C:\\Users\\matth\\Documents\\GitHub\\FiveCardMau'],
              binaries=[],
              datas=[],
@@ -23,11 +23,11 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='icon=icon',
+          name='main',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=True , icon='icon.ico')
