@@ -9,9 +9,9 @@ class Network:
         # Public IP at Home
         # self.server = '98.109.48.234'
         # IP address of computer at home
-        # self.server = '192.168.1.216'
+        self.server = '96.242.117.209'
         # IP address at Purdue
-        self.server = '128.211.222.85'
+        #self.server = '128.211.222.85'
         self.port = 5555
         self.addr = (self.server, self.port)
 
