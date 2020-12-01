@@ -15,56 +15,61 @@ class Blackjacks:
     '''
     def __init__(self, id):
         with open('Cards.json') as json_file:
-            self.cards = json.load(json_file)
-        self.players = {}
-        self.points = {'Dealer': [0]}
-        self.hand = {}
-        self.started = False
-        self.votes = {}
-        self.voters = 0
-        self.order = []
-        self.over = False
-        self.winner_name = ''
-        self.hand.update({'Dealer':[]})
-        self.points.update({'Dealer':[0]})
-        self.turn = 0
-        self.round = 1
-        self.stands = 0
-        self.dealer_play = False
-        self.dealer_display_points = 0
+            self.cards = json.load(json_file) # Imports all card names
+        self.players = {} # Contains the names of all the players and ids that are joining
+        self.points = {'Dealer': [0]} # Contains all the names and points for each individual person
+        self.hand = {} # Contains the hand of each person that is playing
+        self.started = False # Boolean for whether the game has starated or not
+        self.votes = {} # Contains players names and whether they have voted to start the game or not yet
+        self.voters = 0 # How many people have voted to start the game
+        self.order = [] # Contains the order of who is going to go
+        self.over = False # Boolean to decide whether the game should end or not
+        self.winner_name = '' # Name of the person who won last
+        self.hand.update({'Dealer':[]}) # Adds the dealer to the hand dictionary since the dealer is the server
+        self.points.update({'Dealer':[0]}) # Adds the Dealer to the points dictionary since the dealer is the server
+        self.turn = 0 # Value to determine whos turn it is
+        self.round = 1 # Value to determine the round of the game
+        self.stands = 0 # How many people have stood in the game
+        self.dealer_play = False # Has the dealer played
+        self.dealer_display_points = 0 # The points that will be displayed on screen for the dealer
 
     def init_deal(self):
+        # Goes through all the players and adds a random card from the deck to create their hand
         for i, j in enumerate(self.hand):
             for k in range(0,2):
-                r = random.randint(0, len(self.cards['Cards']) - 1)
-                self.hand[j].append(self.cards['Cards'][r])
-                self.cards['Cards'].pop(r)
+                r = random.randint(0, len(self.cards['Cards']) - 1) # Creates a random integer
+                self.hand[j].append(self.cards['Cards'][r]) # Adds the random card to the deck
+                self.cards['Cards'].pop(r) # Removes the card from the deck
         print(self.hand)
         print('Dealt Cards')
 
     def deal(self, Name):
-        r = random.randint(0, len(self.cards['Cards']) - 1)
+        # Deals a card to the player that has requested to be dealt
+        r = random.randint(0, len(self.cards['Cards']) - 1) # Gnerages a random number
         print(r)
-        self.hand[Name].append(self.cards['Cards'][r])
-        print(f"{Name} was dealt {self.cards['Cards'][r]}")
-        self.cards['Cards'].pop(r)
-        self.check_points()
+        self.hand[Name].append(self.cards['Cards'][r]) # Adds the random card to the deck
+        print(f"{Name} was dealt {self.cards['Cards'][r]}") # Prints in console of the server what card was given to who
+        self.cards['Cards'].pop(r) # Removes the card from the deck
+        self.check_points() # Checks points of every player
 
     def stand(self,Name):
-        self.check_points()
-        self.change_turn()
+        self.check_points() # Checks points of every player
+        self.change_turn() # CHanges the turn of the player
 
     def add_player(self, Name, playerid):
-        self.players.update({Name:[playerid, False]})
-        self.points.update({Name:[0]})
-        self.hand.update({Name:[]})
-        self.votes.update({Name: [False]})
-        self.order.append(Name)
-        host = False
+        # Ran when a new player joins the game
+        self.players.update({Name:[playerid, False]}) # Adds name to the list of players
+        self.points.update({Name:[0]}) # Adds the player to the points list
+        self.hand.update({Name:[]}) # Adds player to the list of hands for the game
+        self.votes.update({Name: [False]}) # Adds player to voting dictionary
+        self.order.append(Name) # Adds them to the order list
+        host = False # Identifies that they are not the host of the game
         for i, j in enumerate(self.players):
+            # Determines if there is already a host
             if self.players[j][1] == True:
                 host = True
         if host == False:
+            # Makes player host if there is no host
             self.players[Name][1] = True
 
     def remove_player(self, Name):

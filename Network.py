@@ -6,24 +6,29 @@ from game import *
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
         # Public IP at Home
         # self.server = '98.109.48.234'
+
         # IP address of computer at home
         self.server = '96.242.117.209'
+
         # IP address at Purdue
         #self.server = '128.211.222.85'
+
+        # Port to access on server network
         self.port = 5555
         self.addr = (self.server, self.port)
 
     def connect(self, name):
         try:
-            self.client.connect(self.addr)
-            self.client.send(str.encode(name))
-            return self.client.recv(2048).decode()
+            self.client.connect(self.addr) # Connect to server
+            self.client.send(str.encode(name)) # Sends name of person
+            return self.client.recv(2048).decode() # Receives validation of name
         except:
             pass
     def change_hand(self, new_wait, new_hand ):
-        try:
+        try: # Sends change hand command
             self.client.send(str.encode('change_hand'))
             if self.client.recv(2048).decode() == 'receive 1':
                 self.client.send(str.encode(new_wait))
@@ -43,10 +48,10 @@ class Network:
             print(e)
     def get_game(self):
         try:
-            # Testing new sending details to avoid random crashing
-            self.client.send(str.encode('get_game'))
+            # Asks for updated version of game
+            self.client.send(str.encode('get_game')) # Asks server for game object
             buf = b''
-            while len(buf) < 4:
+            while len(buf) < 4: # Gets length of game
                 buf += self.client.recv(4-len(buf))
             length = struct.unpack('!I', buf)[0]
             return pickle.loads(self.client.recv(length))

@@ -301,7 +301,7 @@ class Spoon:
             player_y = 100
             for i, j in enumerate(self.server.players):
                 PLAYER = Button(self.screen, j, 'arial', 60, 960, player_y, (255,255,255), False, True)
-                player_y += PLAYER.render_height + 250
+                player_y += PLAYER.render_height + 80
 
             self.check_winner()
 
@@ -321,6 +321,6 @@ class Spoon:
         Card4 = self.server.hand[self.name]['Hand'][3].split('_')
 
         if (Card1[0] == Card2[0]) and (Card1[0] == Card3[0]) and (Card1[0] == Card4[0]):
-            WINNER = Button(self.screen, 'Winner', 'arial', 60, self.WIDTH/2, 730, (0,255,0), False, True)
+            WINNER = Button(self.screen, 'Press to Win', 'arial', 60, self.WIDTH/2, 730, (0,255,0), False, True)
             if WINNER.hover() == True:
                 self.network.send('Winner')
