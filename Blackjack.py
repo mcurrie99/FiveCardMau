@@ -73,231 +73,243 @@ class Blackjacks:
             self.players[Name][1] = True
 
     def remove_player(self, Name):
-        new_host = False
-        temp = []
+        # Removes a player from the game variables
+        new_host = False # Initializes a temporary variable to need to new host
+        temp = [] # Initializes list that will be used to transfer cards back to deck
         try:
-            if self.players[Name][1] == True:
-                new_host = True
-            del self.players[Name]
-            del self.points[Name]
-            if self.votes[Name][0] == True:
-                self.voters -=  1
-            del self.votes[Name]
-            self.order.remove(Name)
-            if self.started == True:
-                try:
-                    for i in self.hand[Name]:
-                        temp.append(i)
-                    for i in temp:
-                        self.cards['Cards'].append(i)
-                    del self.hand[Name]
-                    self.empty_lobby()
+            if self.players[Name][1] == True: # Checks if the player is the host
+                new_host = True # Sets variable to true so computer knows to find new host
+            del self.players[Name] # Deletes player from player list
+            del self.points[Name] # Deletes player from points list
+            if self.votes[Name][0] == True: # Checks if the person is true
+                self.voters -=  1 # Removes a total vote if the person has voted
+            del self.votes[Name] # Deletes players name from the vote dictionary
+            self.order.remove(Name) # Removes the name from the order list
+            if self.started == True: # Proccesses that only will be done if the game has started
+                try:  # Won't always work so this makes sure the game does not crash
+                    for i in self.hand[Name]: # Runs through the entire hand of the player
+                        temp.append(i) # Appends the had to the temporary list
+                    for i in temp: # Runs through all the cards in the temporary list
+                        self.cards['Cards'].append(i) # Adds the card back to the deck
+                    del self.hand[Name] # Deletes the player from the hand and his characters
+                    self.empty_lobby() # Checks to see if the lobby's empty
                 except:
                     pass
-            elif self.started == False:
-                self.check_votes()
+            elif self.started == False: # Only runs the processes if the game has not started
+                self.check_votes() # Checks how many people have voted to start the game
 
-            if new_host == True:
-                self.find_new_host()
-            for i in range(0, len(temp)):
-                temp.pop(0)
-            print(f'{Name} was removed from the game')
+            if new_host == True: # If the game needs to find a new host
+                self.find_new_host() # Calls function to start a new host
+            for i in range(0, len(temp)): # Runs through the temporary list, will not run if empty
+                temp.pop(0) # Removes the first element of the list
+            print(f'{Name} was removed from the game') # Prints to the server console that the player has been removed
         except:
-            print(f'Could not delete player: {Name}')
+            print(f'Could not delete player: {Name}') # Prints to the server console that the game could not remove the player
 
     def find_new_host(self):
-        try:
-            if len(self.players > 1):
-                for i, j in enumerate(self.players):
-                    if self.players[j][1] == False:
-                        self.players[j][1] = True
-                        break
+        # Function to find new host
+        try: # Prevents server from crashing
+            if len(self.players) > 0: # Only runs if there is more than 1 person in the lobby
+                for i, j in enumerate(self.players): # Runs through the players in the player dictionary
+                    if self.players[j][1] == False: # The first person that the server finds in the dictionary that's not host
+                        self.players[j][1] = True # Sets the person to be the host of the game
+                        break # Ends the for loop so no one else becomes the host of the game
             else:
-                pass
+                pass # Otherwise pass and do nothing
         except:
             # return game back preparing state
             pass
         
     def end_game(self):
-        print(self.order)
-        print('Ending Game')
-        print(self.points['Dealer'][0])
-        for i, j in enumerate(self.hand):
-            for k in range(0, len(self.hand[j])):
-                self.cards['Cards'].append(self.hand[j][0])
-                self.hand[j].pop(0)
-        for i, j in enumerate(self.votes):
-            self.votes[j][0] = False
-        self.started = False
-        self.voters = 0
-        self.round = 1
-        self.turn = 0
-        self.dealer_play = False
-        print('Game Ended')
-        print(len(self.cards['Cards']))
-        print(self.hand)
-        return self.started
+        # Ends the game when someone has won or there is no one in the game
+        print(self.order) # Print the order of the game
+        print('Ending Game') # Prints to the server console that the game is ending
+        print(self.points['Dealer'][0]) # Prints to the server console the points that the Dealer had
+        for i, j in enumerate(self.hand): # Runs through the players in the hand dictionary if there are any
+            for k in range(0, len(self.hand[j])):  # Runs through the hand of each player
+                self.cards['Cards'].append(self.hand[j][0]) # Adds the card back to the deck
+                self.hand[j].pop(0) # Removes the card from the players deck
+        for i, j in enumerate(self.votes): # Runs through the players in the vote dictionary
+            self.votes[j][0] = False # Sets each players vote to be False so that they can vote again
+        self.started = False # Has stated that game is not running and should not be started
+        self.voters = 0 # Sets the game to have 0 votes
+        self.round = 1 # Changes the round of the game back to 1
+        self.turn = 0 # Changes the turn of which player back to 0
+        self.dealer_play = False # Changes the variable so that game knows that the Dealer has not gone
+        print('Game Ended') # Prints to the server console that the game has not ended
+        print(len(self.cards['Cards'])) # Prints to the server console the length of the card deck
+        print(self.hand) # Prints to the server console the hand dictionary
+        return self.started # Returns that the game should not be started
 
     def start_game(self):
-        self.started = True
-        self.init_deal()
-        self.over = False
-        self.winner_name = ''
-        self.round = 1
-        print('\n\n\n\nStarting Game')
-        return self.started
+        # Starts the game
+        if len(self.order) > 1: # If the length of order is greater than 1
+            random.shuffle(self.order) # Shuffles the order of the players so it changed
+        self.started = True # Sets the game to be started
+        self.init_deal() # Initializes the deals
+        self.over = False # The game is set to not end
+        self.winner_name = '' # Chanes the winners name back to nothing
+        self.round = 1 # The round is onece again set to one
+        print('\n\n\n\nStarting Game') # Prints to the server console that the game is starting
+        return self.started # Returns that the game has started
 
     def vote(self, Name):
-        self.votes[Name][0] = True
-        print(f'{Name} has voted')
-        self.check_votes()
+        # Ran when a player has voted to start the game
+        self.votes[Name][0] = True # Tells the game that the player hs voted
+        print(f'{Name} has voted') # Prints on the server console that the palyer has voted
+        self.check_votes() # Checks who and how many people have voted
 
     def get_host_name(self):
-        for i, j in enumerate(self.players):
-            if self.players[j][1] == True:
-                return j
+        # Gets the host name
+        for i, j in enumerate(self.players): # Runs through the players dictionary
+            if self.players[j][1] == True: # If the person is the host
+                return j # Returns the players name
 
     def check_votes(self):
-        self.voters = 0
-        if len(self.players) > 0:
-            for i, j in enumerate(self.votes):
-                if self.votes[j][0] == True:
-                    self.voters += 1
+        # Checks who and how many people have voted
+        self.voters = 0 # Initializes the vote count at 0
+        if len(self.players) > 0: # If the length of players is greater than 0
+            for i, j in enumerate(self.votes): # Runs through all the votes
+                if self.votes[j][0] == True: # If the specific player has voted the process is ran
+                    self.voters += 1 # The total vote counted is added to by 1
         else:
-            self.empty_lobby()
-        if self.voters == len(self.votes) and self.voters > 0:
-            self.start_game()
+            self.empty_lobby() # If the lobby is empty the proccess is ran
+        if self.voters == len(self.votes) and self.voters > 0: # Runs if there are more than 0 people in the lobby and everyone has voted
+            self.start_game() # The game is started
 
     def empty_lobby(self):
-        if len(self.players) == 0 and self.started == True:
-            print('Empty Lobby')
-            self.end_game()
+        # Checks if the loby is empty
+        if len(self.players) == 0 and self.started == True: # Runs if there is no one in the lobby
+            print('Empty Lobby') # Prints to the server console that the lobby is empty
+            self.end_game() # Ends the game
 
     def change_turn(self):
-        self.player_length = len(self.order) - 1
-        if self.turn == self.player_length:
-            self.round += 1
-            self.stands = 0
-            self.turn = 0
-            print(f'Round Changed to {self.round}')
-        else:
-            turn += 1
+        # Changes the turn of the player
+        self.player_length = len(self.order) - 1 # Defines index of the last player
+        if self.turn == self.player_length: # Runs if the turn is equal to the index of the last player
+            self.round += 1 # Adds one to the round length
+            self.stands = 0 # Sets the number of stands to 0
+            self.turn = 0 # Sets the turn to 0
+            print(f'Round Changed to {self.round}') # Prints to the server console what round the game is now
+        else: # If the turn is not equal to the index of the last player
+            turn += 1 # Adds one to the turn counter
 
-        if self.round == 2 and self.dealer_play == False:
-            self.play_dealer()
-        elif self.round == 4:
-            self.over = True
-            self.end_game()
+        if self.round == 2 and self.dealer_play == False: # Runs if the round is equal 2 and the dealer has not played
+            self.play_dealer() # Has the dealer play
+        elif self.round == 4: # If the round is equal to 4
+            self.over = True # The game is set to end
+            self.end_game() # Ends the game
 
     def check_points(self):
-        for i, j in enumerate(self.points):
-            number = False
-            count_low = 0
-            count_high = 0
-            Ace = False
-            check = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-            for k in self.hand[j]:
-                count_add = k.split('_')
-                for l in check:
-                    if count_add[0] == l:
-                        add = int(count_add[0])
-                        count_low += add
-                        count_high += add
-                        break
+        # Checks the points of all the players
+        for i, j in enumerate(self.points): # Runs through all the players in the points dictionary
+            number = False # Is the first term in the card a number is automatically set to False
+            count_low = 0 # Low count is initialized to 0
+            count_high = 0 # High count is initialized to 0
+            Ace = False # Is there an Ace is automatically set to False
+            check = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] # Set the terms to be compared to temporarily
+            for k in self.hand[j]: # Runs through the hand of the player
+                count_add = k.split('_') # Splits the card title by underscores
+                for l in check: # Runs through the check list
+                    if count_add[0] == l: # Runs if the first term of the split string is equal to the check
+                        add = int(count_add[0]) # Converts the number to an integer
+                        count_low += add # Adds the number to the high count
+                        count_high += add # Adds the number to the low count
+                        break # Breaks the current for loop of running through the check list
                 
-                if count_add[0] == 'king' or count_add[0] == 'queen' or count_add[0] == 'jack':
-                    count_low += 10
-                    count_high += 10
-                elif count_add[0] == 'ace':
-                    if Ace == False:
-                        count_low += 1
-                        count_high += 11
-                        Ace = True
-                    elif Ace == True:
-                        count_low += 1
-                        count_high += 1
-            diff1 = 21 - count_low
-            diff2 = 21 - count_high
+                if count_add[0] == 'king' or count_add[0] == 'queen' or count_add[0] == 'jack': # Checks to see if the term is equal to any of the name cards
+                    count_low += 10 # Adds 10 to the high count
+                    count_high += 10 # Adds 10 to the low count
+                elif count_add[0] == 'ace': # Runs if the first term is an ace
+                    if Ace == False: # Runs if there has not already been an ace counted
+                        count_low += 1 # Adds 1 to the low count
+                        count_high += 11 # Adds 11 to the high count
+                        Ace = True # Sets the variable to True so the game knows there is an Ace in the deck
+                    elif Ace == True: # Runs if the game has already counted an Ace
+                        count_low += 1 # Adds one to the low count
+                        count_high += 1 # Adds one to the high count
+            diff1 = 21 - count_low # Finds the difference between 21 and the low count
+            diff2 = 21 - count_high # Finds the difference between 21 and the high count
 
-            if diff1 <= diff2 and diff1 >= 0:
-                self.points[j][0] = count_low
-            elif diff2 <= diff1 and diff2 >= 0:
-                self.points[j][0] = count_high
-            elif diff1 < 0 and diff2 < 0:
-                self.points[j][0] = 'Over 21'
-            elif diff1 < 0 and diff2 >= 0:
-                self.points[j][0] = count_high
-            elif diff2 < 0 and diff1 >= 0:
-                self.points[j][0] = count_low
-            else:
-                print('Stats')
-                print(diff1)
-                print(diff2)
-                print(count_low)
-                print(count_high)
-                print()
+            if diff1 <= diff2 and diff1 >= 0: # Runs if the difference 1 is smaller and difference 1 is greater than 0
+                self.points[j][0] = count_low # Sets the low count to be points for that person
+            elif diff2 <= diff1 and diff2 >= 0: # Runs if the difference 2 is smaller and difference 1 is greater than 0
+                self.points[j][0] = count_high # Sets the players points to be the high count
+            elif diff1 < 0 and diff2 < 0: # Runs if the difference 1 and 2 are less than 0
+                self.points[j][0] = 'Over 21' # Set the players count to be "Over 21"
+            elif diff1 < 0 and diff2 >= 0: # Runs if difference 1 is less than 0 and difference 2 is greater than 0
+                self.points[j][0] = count_high # Sets the player's points to be the high count
+            elif diff2 < 0 and diff1 >= 0: # Runs if difference 2 is less than 0 and difference 1 is greater than 0
+                self.points[j][0] = count_low # Sets the player's points to be the low count
+            else: # If none of the cases are met
+                print('Stats') # Prints "Stats" to the server console
+                print(diff1) # Print the first difference
+                print(diff2) # Print the second difference
+                print(count_low) # Print the low count
+                print(count_high) # Print the high count
+                print() # Adds a couple of spaces so that the stats can be seen
                 print()
                 print()
                 print()
 
-                self.points[j][0] = 'Error'
+                self.points[j][0] = 'Error' # Sets the player's points to be "Error" telling the player that there is a problem
 
-            if self.started == True:
-                if self.round != 1:
+            if self.started == True: # Runs if the game has started
+                if self.round != 1: # Runs if the round is not 1
                     # print('setting display points 1')
-                    self.dealer_display_points = self.points['Dealer'][0]
-                else:
+                    self.dealer_display_points = self.points['Dealer'][0] # Displays the total points for the dealer
+                else: # If the game is on round 1
                     # print('setting display points 2')
-                    dealer_add = self.hand['Dealer'][0].split('_')[0]
+                    dealer_add = self.hand['Dealer'][0].split('_')[0] # Splits the first card of the dealer's hand
                     # print(dealer_add)
-                    for i in check:
-                        if dealer_add == i:
-                            self.dealer_display_points = int(dealer_add)
+                    for i in check: # Runs through the check list variables
+                        if dealer_add == i: # If the first term of the card is equal a variable in the checklist
+                            self.dealer_display_points = int(dealer_add) # The dealer's display points are equal to 0
 
-                    if dealer_add == 'king' or dealer_add == 'queen' or dealer_add == 'jack':
-                        self.dealer_display_points = 10
-                    elif dealer_add == 'ace':
-                        self.dealer_display_points = 11
+                    if dealer_add == 'king' or dealer_add == 'queen' or dealer_add == 'jack': # Runs if the first term corresponds to a name card
+                        self.dealer_display_points = 10 # Sets the display points to 10
+                    elif dealer_add == 'ace': # Runs if the first term indicates the card is an ace
+                        self.dealer_display_points = 11 # Sets the display points to be 11
                         
     def play_dealer(self):
-        if self.started == True:
-            print('Dealer Playing')
-            while True:
-                if self.points['Dealer'][0] == 'Over 21' or self.points['Dealer'][0] >= 17:
-                    break
+        # Plays the dealer when it is his turn
+        if self.started == True: # Runs if the game has started
+            print('Dealer Playing') # Prints to the server console that it is playing the dealer
+            while True: # Runs a while loop for the dealer
+                if self.points['Dealer'][0] == 'Over 21' or self.points['Dealer'][0] >= 17: # Runs if the dealers cards are over 21
+                    break # Breaks the while loop
                 else:
-                    print('Dealing Dealer')
-                    self.deal('Dealer')
+                    print('Dealing Dealer') # Prints to the server console that the dealer is being dealt a card
+                    self.deal('Dealer') # Deals the dealer a card
 
-                self.check_points()
-            self.dealer_play = True
-            print('Dealer Standing')
-            self.stand('Dealer')
-            self.winners()
+                self.check_points() # Checks the points of the players
+            self.dealer_play = True # Tells the game that the dealer has played
+            print('Dealer Standing') # Prints to the server console that the dealer is standing
+            self.stand('Dealer') # Tells the game that the Dealer is standing
+            self.winners() # Checks the game for winners
 
     def winners(self):
-        winner_num = 0
-        for i, j in enumerate(self.points):
-            if i == 0:
-                if self.points[j][0] == 'Over 21':
-                    for k, l in enumerate(self.players):
-                        if k == 0:
-                            self.winner_name += l
-                        else:
-                            self.winner_name += f', {l}'
-                        self.winner_name
-                    winner_num += 1
-                    break
-                continue
-            if self.points[j][0] != 'Over 21':
-                if self.points[j][0] >= self.points['Dealer'][0]:
-                    if winner_num == 0:
-                        self.winner_name += j
-                        winner_num += 1
-                    else:
-                        self.winner_name += f', {j}'
-        if winner_num == 0:
-            self.winner_name = 'None'
+        winner_num = 0 # Initializes the number of winners to 0
+        for i, j in enumerate(self.points): # Runs through all the players points
+            if i == 0: # If the index is 0, which is the dealer
+                if self.points[j][0] == 'Over 21': # Runs if the Dealers Cards are over 21
+                    for k, l in enumerate(self.players): # Runs through the players
+                        if k == 0: # Runs if it is the first iteration
+                            self.winner_name += l # Adds the players name to the string of winners
+                        else: # Runs if it is not the first iteration of the for loop
+                            self.winner_name += f', {l}'  # Adds a comma and space before players name for correct grammar
+                    winner_num += 1 # Adds 1 the number of winners
+                    break # Breaks the for loop running through the points
+                continue # Continues to next iteration of the loop
+            if self.points[j][0] != 'Over 21': # Runs if the player's points is not over 21
+                if self.points[j][0] >= self.points['Dealer'][0]: # Runs if the player's points is greater than the Dealer's points
+                    if winner_num == 0: # Runs if the number of winners is 0
+                        self.winner_name += j # Adds the players name to the strings of winners
+                        winner_num += 1 # Adds 1 to the number of winners
+                    else: # If the number of winners is more than 0
+                        self.winner_name += f', {j}' # Adds the player's name to the string of winner name with a comma and a space for proper grammar
+        if winner_num == 0: # Runs if there are no winners
+            self.winner_name = 'None' # Sets the winner name to 0
         # self.over = True
         # self.end_game()
         
@@ -311,159 +323,162 @@ class Blackjack:
     voted to be the next game that is used
     '''
     def __init__(self, screen, network, name, WIDTH, HEIGHT):
-        self.screen = screen
-        self.network = network
-        self.name = name
-        self. WIDTH = WIDTH
-        self.HEIGHT = HEIGHT
-        self.game_over = False
+        # Initializes game renderer 
+        self.screen = screen # Sets window to use
+        self.network = network # Sets the network object to use
+        self.name = name # Sets the name of the player
+        self. WIDTH = WIDTH # Sets the Width of the window
+        self.HEIGHT = HEIGHT # Sets the Height to the window
+        self.game_over = False # Sets the game to not be over
 
     def lobby(self):
-        global close_game
-        gamer = False
-        close_game = True
-        self.voted = False
-        lob = pygame.image.load('background.png')
+        global close_game # Makes close_game a global variable
+        gamer = False # Sets gamer to be False
+        close_game = True # Sets close_game to True so that the game closes when the game is exited
+        self.voted = False # Sets if the player has voted to false 
+        lob = pygame.image.load('background.png') # Loads in the background texture
         # game_over = True
         # network.change_hand('this', 'works')
-        while gamer == False:
-            self.server = self.network.get_game()
-            player_y = 0
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+        while gamer == False: # Sets up a while loop for game
+            self.server = self.network.get_game() # Requests and get the game data
+            player_y = 0 # Pixel location for where to render names
+            for event in pygame.event.get(): # Reads for inputs from user
+                if event.type == pygame.QUIT: # Runs if input is to hit the exit button
+                    sys.exit() # Quits the game
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        sys.exit()
-            self.screen.fill((0,0,0))
-            self.screen.blit(lob, (0,0))
+                if event.type == pygame.KEYDOWN: # Runs if the input is a keyboard press
+                    if event.key == pygame.K_q: # Runs if the input is the press of the q button
+                        sys.exit() # Exits the game
+            self.screen.fill((0,0,0)) # Fills the background of the game with black
+            self.screen.blit(lob, (0,0)) # Renders the lobby texture onto the screen
 
-            LOBBY = Button(self.screen, 'Lobby', 'arial', 35, 0, 0, (255,255,255), False, False)
-            for i, j in enumerate(self.server.players):
-                PLAYER = Button(self.screen, j, 'arial', 40, 1500, player_y, (255,255,255), False, False)
-                player_y += PLAYER.render_height + 50
+            LOBBY = Button(self.screen, 'Lobby', 'arial', 35, 0, 0, (255,255,255), False, False) # Rends the text that says "Lobby"
+            for i, j in enumerate(self.server.players): # Runs through the players of the game
+                PLAYER = Button(self.screen, j, 'arial', 40, 1500, player_y, (255,255,255), False, False) # Renders in the players name as text onto screen
+                player_y += PLAYER.render_height + 50 # Adds 50 to the pixel location of the person
 
-            if self.voted == False:
-                VOTE = Button(self.screen, 'Vote to Start Game', 'arial', 35, 50, 880, (0,255,0), False, False)
-                clicked = VOTE.hover()
-                if clicked == True:
-                    self.network.send('voted')
-                    self.voted = True
-            elif self.voted == True:
-                VOTE = Button(self.screen, 'You Have Voted', 'arial', 35, 50, 880, (255,0,0), False, False)
+            if self.voted == False: # Runs if the person has voted
+                VOTE = Button(self.screen, 'Vote to Start Game', 'arial', 35, 50, 880, (0,255,0), False, False) # Renders in a button to vote
+                clicked = VOTE.hover() # Checks if the player has clicked to vote
+                if clicked == True: # If the person has clicked
+                    self.network.send('voted') # Sends the information to the server that the player has voted
+                    self.voted = True # Tell the user's computer that the user has voted
+            elif self.voted == True: # Runs if the player has voted
+                VOTE = Button(self.screen, 'You Have Voted', 'arial', 35, 50, 880, (255,0,0), False, False) # Renders in a vote button that says you have voted
             
-            TOTAL_VOTES = Button(self.screen, f'Total Votes: {self.server.voters}', 'arial', 35, 50, 980, (255,0,0), False, False)
+            TOTAL_VOTES = Button(self.screen, f'Total Votes: {self.server.voters}', 'arial', 35, 50, 980, (255,0,0), False, False) # Renders in text of how many people have voted
 
-            if self.server.winner_name == '':
-                pass
-            elif self.server.winner_name == 'None':
-                WINNER_NAME = Button(self.screen, f'Winner(s): {self.server.winner_name}', 'arial', 50, self.WIDTH/2, 200, (255,0,0), False, True)
+            if self.server.winner_name == '': # Runs if there are no winners
+                pass # Does not render any text
+            elif self.server.winner_name == 'None': # Runs if there were no winners in the last game
+                WINNER_NAME = Button(self.screen, f'Winner(s): {self.server.winner_name}', 'arial', 50, self.WIDTH/2, 200, (255,0,0), False, True) # Renders the winners names in red text
             else:
-                WINNER_NAME = Button(self.screen, f'Winner(s): {self.server.winner_name}', 'arial', 50, self.WIDTH/2, 200, (0,255,0), False, True)
+                WINNER_NAME = Button(self.screen, f'Winner(s): {self.server.winner_name}', 'arial', 50, self.WIDTH/2, 200, (0,255,0), False, True)  # Renders the winners names in green text
 
-            pygame.display.update()
+            pygame.display.update() # Updates the game display with the new frame
 
-            if self.server.started == True:
-                self.game()
-                self.voted = False
+            if self.server.started == True: # Runs if the game has started
+                self.game() # Starts the game rendering
+                self.voted = False # Sets the user's voting status back to false
 
     def game(self):
-        self.voted = False
-        self.Stand = False
+        # Runs the game rendering
+        self.voted = False # Sets voting status to False
+        self.Stand = False # Sets the Stands Status to False
 
-        counter = 0
+        counter = 0 # Initializes counter to 0
 
         #Background
-        background = pygame.image.load('background.png')
+        background = pygame.image.load('background.png') # Loads in the background texture
 
-        WAIT = 0
+        WAIT = 0 # Initializes variable for how long for game to wait in between clicks
         # Game
-        while not self.game_over:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+        while not self.game_over: # While loop to run game
+            for event in pygame.event.get(): # Reads for inputs from user
+                if event.type == pygame.QUIT: # Runs if input is to hit the exit button
+                    sys.exit() # Quits the game
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        sys.exit()
-            self.server = self.network.get_game()
+                if event.type == pygame.KEYDOWN: # Runs if the input is a keyboard press
+                    if event.key == pygame.K_q: # Runs if the input is the press of the q button
+                        sys.exit() # Exits the game
+            self.server = self.network.get_game() # Requests and gets game data from server
                 
             # Resets screen
-            self.screen.fill((0,0,0))
-            self.screen.blit(background, (0,0))
+            self.screen.fill((0,0,0)) # Renders in a black screen
+            self.screen.blit(background, (0,0)) # Renders in the background
 
             # Creates and draws cards that the player holds
             
-            try:
+            try: # Tries rendering in the cards
                 # There should always be an initial card
-                CARD1 = Card(self.screen, self.server.hand[self.name][0], .5, 105, 680)
+                CARD1 = Card(self.screen, self.server.hand[self.name][0], .5, 105, 680) # Renders in Card 1
 
                 try:
-                    CARD2 = Card(self.screen, self.server.hand[self.name][1], .5, 470, 680)
+                    CARD2 = Card(self.screen, self.server.hand[self.name][1], .5, 470, 680) # Tries to render in Card 2
                 except:
                     pass
                 try:
-                    CARD3 = Card(self.screen, self.server.hand[self.name][2], .5, 835, 680)
+                    CARD3 = Card(self.screen, self.server.hand[self.name][2], .5, 835, 680) # Tries to render in Card 3
                 except:
                     pass
                 try:
-                    CARD4 = Card(self.screen, self.server.hand[self.name][3], .5, 1200, 680)
+                    CARD4 = Card(self.screen, self.server.hand[self.name][3], .5, 1200, 680) # Tries to render in Card 4
                 except:
                     pass
                 try:
-                    CARD5 = Card(self.screen, self.server.hand[self.name][4], .5, 1565, 680)
+                    CARD5 = Card(self.screen, self.server.hand[self.name][4], .5, 1565, 680) # Tries to render in Card 5
                 except:
                     pass
             except:
-                print('Error at printing cards')
+                print('Error at printing cards') # Prints in player's console that the cards has failed to render
 
 
             # Shows the dealer first card and second card
             try:
                 # There should always be an initial card
                 # Should start at 617.5
-                CARD1_DEALER = Card(self.screen, self.server.hand['Dealer'][0], .25, 617, 170)
+                CARD1_DEALER = Card(self.screen, self.server.hand['Dealer'][0], .25, 617, 170) # Tries to render in Dealer Card 1
 
                 try:
-                    if self.server.round < 3:
-                        CARD2_DEALER = Button(self.screen, '?', 'arial', 90, 819.5, 260.75, (255, 255, 255), True, False)
+                    if self.server.round < 3: # Runs if the round is less than 3
+                        CARD2_DEALER = Button(self.screen, '?', 'arial', 90, 819.5, 260.75, (255, 255, 255), True, False) # Renders in a question mark where the second dealt card is
                     else:
-                        CARD2_DEALER = Card(self.screen, self.server.hand['Dealer'][1], .25, 757, 170)
+                        CARD2_DEALER = Card(self.screen, self.server.hand['Dealer'][1], .25, 757, 170) # Tries to render in Dealer Card 2
                 except:
                     pass
                 try:
-                    CARD3_DEALER = Card(self.screen, self.server.hand['Dealer'][2], .25, 897, 170)
+                    CARD3_DEALER = Card(self.screen, self.server.hand['Dealer'][2], .25, 897, 170) # Tries to render in Dealer Card 3
                 except:
                     pass
                 try:
-                    CARD4_DEALER = Card(self.screen, self.server.hand['Dealer'][3], .25, 1037, 170)
+                    CARD4_DEALER = Card(self.screen, self.server.hand['Dealer'][3], .25, 1037, 170) # Tries to render in Dealer Card 4
                 except:
                     pass
                 try:
-                    CARD5_DEALER = Card(self.screen, self.server.hand['Dealer'][4], .25, 1177, 170)
+                    CARD5_DEALER = Card(self.screen, self.server.hand['Dealer'][4], .25, 1177, 170) # Tries to render in Dealer Card 5
                 except:
                     pass
             except:
-                print('Error at printing cards')
+                print('Error at printing cards') # Prints in player's console that the cards has failed to render
             try:
                 WAITING = Card(self.screen, self.server.hand[self.name]['Waiting'][0], 1570, 100)
             except:
                 WAITING = False
 
             # Playable Buttons
-            if self.Stand == False:
-                HIT = Button(self.screen, 'Hit', 'arial', 90, 150, 150, (255,255,255), False, False)
-                self.STAND = Button(self.screen, 'Stand', 'arial', 90, (200 + HIT.render_width), 150, (255, 255, 255), False, False)
+            if self.Stand == False: # If the player hasn't Stood
+                HIT = Button(self.screen, 'Hit', 'arial', 90, 150, 150, (255,255,255), False, False) # Render in Hit button
+                self.STAND = Button(self.screen, 'Stand', 'arial', 90, (200 + HIT.render_width), 150, (255, 255, 255), False, False) # Render in Stand button
 
             # Shows the calculated amount of points that you have at the moment
             POINTS = Button(self.screen, f'Points: {self.server.points[self.name][0]}', 'arial', 90, 105, (680 - (self.STAND.render_height + 50)), (255, 255, 255), False, False)
+            # Shows the calculated amount of points that the dealer has
             DEALER_POINTS = Button(self.screen, f'Points: {self.server.dealer_display_points}', 'arial', 50, self.WIDTH/2, 400, (0, 0, 255), False, True)
 
-            if self.server.points[self.name][0] == 'Over 21':
-                self.Stand = True
+            if self.server.points[self.name][0] == 'Over 21': # Runs if the players points is over 21
+                self.Stand = True # Automatically has the person stand
 
-            # Draws the Hit or Stand Buttons to Hit
+            # Draws the Hit or Stand Buttons to Hit and allows you to click them
             if self.Stand == False and self.server.turn == self.server.order.index(self.name):
                 if HIT.hover() == True and self.name == self.server.order[self.server.turn] and WAIT == 100 and self.Stand == False:
                     self.network.send('Hit')
@@ -476,29 +491,29 @@ class Blackjack:
                 self.network.send('Stand')
 
             # Tells you if it is your turn
-            if self.server.turn == self.server.order.index(self.name):
-                TURN = Button(self.screen, 'It is your turn', 'arial', 90, self.WIDTH/2, 100, (0, 255, 0), False, True)
+            if self.server.turn == self.server.order.index(self.name): # Runs if it is the player's turn
+                TURN = Button(self.screen, 'It is your turn', 'arial', 90, self.WIDTH/2, 100, (0, 255, 0), False, True) # Renders in that it is your turn in green text
             elif self.Stand == True:
-                TURN = Button(self.screen, 'Your are standing', 'arial', 90, self.WIDTH/2, 100, (0,0,255), False, True)
-            else:
+                TURN = Button(self.screen, 'Your are standing', 'arial', 90, self.WIDTH/2, 100, (0,0,255), False, True) # Renders in that you are standing in Blue text
+            else: # Runs if it is not your turn and you have not stood
                 current_turn = self.server.order[self.server.turn]
-                TURN = Button(self.screen, f'It is {current_turn}\'s turn', 'arial', 90, self.WIDTH/2, 100, (255, 0, 0), False, True)
+                TURN = Button(self.screen, f'It is {current_turn}\'s turn', 'arial', 90, self.WIDTH/2, 100, (255, 0, 0), False, True) # Renders in that it not is your turn in red text
 
             
             # Shows players that are in the lobby
             player_y = 100
-            for i, j in enumerate(self.server.players):
-                PLAYER = Button(self.screen, j, 'arial', 60, 1500, player_y, (255,255,255), False, False)
-                player_y += PLAYER.render_height + 250
+            for i, j in enumerate(self.server.players): # Runs through players names
+                PLAYER = Button(self.screen, j, 'arial', 60, 1500, player_y, (255,255,255), False, False) # Renders in players text name
+                player_y += PLAYER.render_height + 50 # Adds 50 pixles after name is rendered
 
 
-            if WAIT < 100:
-                WAIT += 5
+            if WAIT < 100: # Run's if the click count is less than 100
+                WAIT += 10 # Adds 5 to the WAIT variable
 
             
-            if self.server.over == True:
-                time.sleep(3)
-                print('End Game')
+            if self.server.over == True: # Runs if the game has ended
+                time.sleep(3) # Pauses the game for 3 seconds
+                print('End Game') # Prints in the player's console that the game has ended
                 break
 
-            pygame.display.update()
+            pygame.display.update() # Shows the new rendered frame in the window
