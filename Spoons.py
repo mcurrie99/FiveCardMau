@@ -24,6 +24,7 @@ class Spoons:
         self.order = [] # Contains the order of who is going to go
         self.winner = False # Boolean to decide whether the game should end or not
         self.winner_name = '' # Name of the person who won last
+        self.needed_votes = 0 # Sets the number of needed votes that it needs to be greater than
 
     def deal(self):
         for i, j in enumerate(self.hand):
@@ -164,7 +165,7 @@ class Spoons:
                     self.voters += 1 # The total vote counted is added to by 1
         else:
             self.empty_lobby() # If the lobby is empty the proccess is ran
-        if self.voters == len(self.votes) and self.voters > 1: # Runs if there are more than 0 people in the lobby and everyone has voted
+        if self.voters == len(self.votes) and self.voters > self.needed_votes: # Runs if there are more than 0 people in the lobby and everyone has voted
             self.start_game() # The game is started
 
     def empty_lobby(self):
