@@ -246,11 +246,14 @@
 # print(z)
 
 #QUESTION 4
-x = [2,6]
-c=0
-for a in x:
-    for b in range(5,3,-3):
-        c = a+b
-print(a)
-print(b)
-print(c)
+# x = [2,6]
+# c=0
+# for a in x:
+#     for b in range(5,3,-3):
+#         c = a+b
+# print(a)
+# print(b)
+# print(c)
+
+#QUESTION 5
+matr = [3,4,6,8,9,0,1]
