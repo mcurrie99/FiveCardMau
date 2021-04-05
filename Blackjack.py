@@ -13,6 +13,8 @@ class Blackjacks:
     '''
     Server side of Blackjack
     '''
+    gameID = 0
+
     def __init__(self, id):
         with open('Cards.json') as json_file:
             self.cards = json.load(json_file) # Imports all card names
@@ -32,6 +34,8 @@ class Blackjacks:
         self.stands = 0 # How many people have stood in the game
         self.dealer_play = False # Has the dealer played
         self.dealer_display_points = 0 # The points that will be displayed on screen for the dealer
+        
+        self.gameID += 1 # LOOK INTO THIS FOR THE SUMMER
 
     def init_deal(self):
         # Goes through all the players and adds a random card from the deck to create their hand

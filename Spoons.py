@@ -13,6 +13,8 @@ class Spoons:
     '''
     Server side of Spoons
     '''
+    gameID = 0
+
     def __init__(self, id):
         with open('Cards.json') as json_file:
             self.cards = json.load(json_file)# Imports all card names
@@ -25,6 +27,8 @@ class Spoons:
         self.winner = False # Boolean to decide whether the game should end or not
         self.winner_name = '' # Name of the person who won last
         self.needed_votes = 0 # Sets the number of needed votes that it needs to be greater than
+        
+        self.gameID += 1 # LOOK INTO THIS MORE FOR MORE GAMES
 
     def deal(self):
         for i, j in enumerate(self.hand):
