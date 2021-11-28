@@ -12,6 +12,7 @@ from Buttons import *
 class Spoons:
     '''
     Server side of Spoons
+    id: Id of game, this will be used for multiple multiplayer games in the future
     '''
     def __init__(self, id):
         with open('Cards.json') as json_file:
