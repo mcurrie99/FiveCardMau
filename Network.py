@@ -1,7 +1,7 @@
 import socket
 import pickle
 import struct
-from game import *
+# from game import *
 
 class Network:
     def __init__(self):
@@ -11,7 +11,10 @@ class Network:
         # self.server = '98.109.48.234'
 
         # IP address of computer at home
-        self.server = '96.242.117.209'
+        # self.server = '71.187.211.242' # Public IP Address of the server (do not include port)
+
+        # Test Port for Domain
+        self.server = 'game.currspice.com'
 
         # IP address at Purdue
         #self.server = '128.211.222.85'

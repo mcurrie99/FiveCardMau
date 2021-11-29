@@ -12,6 +12,7 @@ from Buttons import *
 class Blackjacks:
     '''
     Server side of Blackjack
+    id: Id of the game, will be used down the line for multiple games happening at hte same time
     '''
     gameID = 0
 
