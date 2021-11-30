@@ -33,6 +33,7 @@ class Button:
         self.font = font # font = what font you would like
         self.fontsize = fontsize # fontsize = fontsize you would like
         self.center = center # center = Use the center as reference
+        self.cRadius = 10
         self.draw_text() # Draws the text
 
     def click(self): # Checks if the button is clicked
@@ -114,6 +115,7 @@ class Card:
         self.y = y # Y position
         self.scale = scale # Scale down size
         self.draw()
+        self.cRadius = 10
 
     def draw(self):
         self.location = pygame.image.load(f'Playing_Cards/{self.card}.png') # Loads texture

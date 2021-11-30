@@ -256,4 +256,32 @@
 # print(c)
 
 #QUESTION 5
-matr = [3,4,6,8,9,0,1]
+# matr = [3,4,6,8,9,0,1]
+
+# Importing the library
+import pygame
+import sys
+ 
+# Initializing Pygame
+pygame.init()
+ 
+# Initializing surface
+surface = pygame.display.set_mode((400, 300))
+ 
+# Initialing Color
+color = (48, 141, 70)
+ 
+# Drawing Rectangle
+while True:
+
+    for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    # If q is pressed the game quits
+                    if event.key == pygame.K_q:
+                        sys.exit()
+
+    pygame.draw.rect(surface, color, pygame.Rect(30, 30, 60, 60),  2, 8)
+    pygame.display.flip()

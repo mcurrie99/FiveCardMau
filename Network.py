@@ -1,7 +1,6 @@
 import socket
 import pickle
 import struct
-# from game import *
 
 class Network:
     def __init__(self):
@@ -56,7 +55,7 @@ class Network:
             buf = b''
             while len(buf) < 4: # Gets size of game
                 buf += self.client.recv(4-len(buf))
-            length = struct.unpack('!I', buf)[0] # size of incoming file
+            length = struct.unpack('!I', buf)[0] # size of incoming file !I identifies that it will be seen as an integer
             return pickle.loads(self.client.recv(length)) # Receices game file
         except socket.error as e:
             print(e)

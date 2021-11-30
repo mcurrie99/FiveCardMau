@@ -197,7 +197,7 @@ class Blackjacks:
             self.turn = 0 # Sets the turn to 0
             print(f'Round Changed to {self.round}') # Prints to the server console what round the game is now
         else: # If the turn is not equal to the index of the last player
-            turn += 1 # Adds one to the turn counter
+            self.turn += 1 # Adds one to the turn counter
 
         if self.round == 2 and self.dealer_play == False: # Runs if the round is equal 2 and the dealer has not played
             self.play_dealer() # Has the dealer play
