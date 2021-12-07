@@ -9,7 +9,7 @@ from Blackjack import *
 server = ''
 port = 5555
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Setsd up networking socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Sets up networking socket
 
 spoons = Spoons(0) # Creates a game of Spoons
 blackjack = Blackjacks(0) # Creates a game of Blackjack
